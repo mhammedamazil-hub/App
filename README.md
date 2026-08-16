@@ -1,1 +1,91 @@
-# App
+# TaskFlow — an advanced to-do list app
+
+TaskFlow is a full-featured, offline-first to-do list built with **Flutter/Dart**.
+It ships with **zero third-party dependencies**: persistence is implemented with
+`dart:io` on desktop/mobile and browser `localStorage` on the web, so it builds
+and runs even without network access.
+
+## Features
+
+- **Smart lists** — Inbox, Today, Upcoming (14 days), Overdue, Completed, All tasks
+- **Projects** with custom colors and icons, per-project progress and counts
+- **Kanban board** per project (To Do / In Progress / Done) with drag & drop
+- **Subtasks** with live progress chips
+- **Priorities** (none/low/medium/high), **tags**, **pinning**
+- **Due dates & times** with relative labels and overdue highlighting
+- **Repeating tasks** — daily, weekdays, weekly, monthly, yearly (next occurrence
+  is spawned automatically when you complete the task)
+- **Reminders** — in-app banner when a reminder fires while the app is open
+- **Swipe actions** — swipe right to complete, swipe left to delete (undoable)
+- **Search** across titles, notes and tags (Ctrl+K)
+- **Stats dashboard** — completion rate, day streak, 7-day chart, per-project and
+  per-priority breakdowns
+- **Undo** for deletes, imports and clears
+- **Backup & restore** — JSON export/import (file on desktop, download/upload on
+  web, clipboard on mobile)
+- **Light / dark / system theme** with 8 accent colors (Material 3)
+- **Keyboard shortcuts** — `Ctrl+N` new task, `Ctrl+K` search, `Esc` clear search
+- Fully **responsive** — sidebar on wide screens, drawer + bottom bar on phones
+
+## Getting started
+
+Requires the Flutter SDK (3.27 or newer, tested with 3.35).
+
+```bash
+flutter pub get
+flutter run            # pick a device: chrome, linux, macos, windows, android…
+```
+
+Platform notes:
+
+- `android/`, `ios/`, `web/`, `linux/`, `macos/`, `windows/` scaffolding is
+  included. If your local Flutter version differs a lot, run
+  `flutter create .` once to refresh platform files (your `lib/` code is
+  untouched).
+- Storage location per platform:
+  - Android/iOS: app documents directory (`taskflow_data.json`) via a small
+    platform channel in `MainActivity.kt` / `AppDelegate.swift`
+  - Linux: `$XDG_DATA_HOME/taskflow/` or `~/.local/share/taskflow/`
+  - macOS: `~/Library/Application Support/taskflow/`
+  - Windows: `%APPDATA%/taskflow/`
+  - Web: browser `localStorage`
+
+## Tests
+
+```bash
+flutter test
+```
+
+Unit tests cover model serialization, repeat scheduling (including end-of-month
+and leap-day edge cases), overdue logic, queries, streaks, undo, import/export
+and persistence.
+
+## CI & web preview
+
+`.github/workflows/build-web.yml` runs format, `flutter analyze`, `flutter test`
+and `flutter build web --release` on every push to the arena branch, then
+publishes the build (plus `analyze.log` / `test.log`) to the `gh-pages` branch.
+
+To host the app on GitHub Pages, enable Pages from the `gh-pages` branch in the
+repository settings (build with `flutter build web --base-href "/App/"` if your
+repo is served from a sub-path).
+
+## Project layout
+
+```
+lib/
+  main.dart                     app entry, theming
+  theme.dart                    Material 3 themes, accent seeds
+  models/
+    task.dart                   Task, Subtask, priorities, repeat logic
+    project.dart                Project
+    settings.dart               theme/accent preferences
+    app_state.dart              state, persistence, undo, queries, stats
+  services/
+    storage*.dart               storage abstraction (io / web)
+    backup*.dart                export/import (file / download / clipboard)
+  utils/                        dates & id helpers
+  widgets/                      sidebar, task tiles, badges, banners, charts
+  screens/                      shell, views, editor, kanban, settings, stats
+test/                           unit tests
+```

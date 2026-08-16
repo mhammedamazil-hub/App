@@ -1,0 +1,60 @@
+name: build-web
+
+# Builds the TaskFlow web app and publishes it (together with the analyzer
+# and test logs) to the `gh-pages` branch.
+#
+# Enable GitHub Pages on the `gh-pages` branch to host the app, or simply
+# check out the branch and serve `build/` locally.
+
+on:
+  push:
+    branches: ["arena/01a008ff-app"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: taskflow-preview
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.35.7"
+          cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Format
+        run: dart format lib test > format.log 2>&1 || true
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings > analyze.log 2>&1 || true
+
+      - name: Test
+        run: flutter test --reporter expanded > test.log 2>&1 || true
+
+      - name: Build web
+        run: flutter build web --release
+
+      - name: Publish preview to gh-pages
+        run: |
+          cp analyze.log test.log build/web/ 2>/dev/null || true
+          touch build/web/.nojekyll
+          cd build/web
+          git init -q -b gh-pages
+          git config user.name "taskflow-ci"
+          git config user.email "ci@taskflow.local"
+          git add -A
+          git commit -q -m "preview build $(date -u +%Y%m%d-%H%M%S)"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
