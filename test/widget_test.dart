@@ -14,23 +14,24 @@ class MemoryStorage implements Storage {
 }
 
 void main() {
-  testWidgets('TaskFlow boots to the welcome screen and opens the editor', (
-    tester,
-  ) async {
-    final state = AppState(storage: MemoryStorage());
-    state.loaded = true; // skip the async disk load
+  testWidgets(
+    'TaskFlow boots to the welcome screen and the FAB opens the editor',
+    (tester) async {
+      final state = AppState(storage: MemoryStorage());
+      state.loaded = true; // skip the async disk load
 
-    await tester.pumpWidget(MaterialApp(home: TaskFlowShell(state: state)));
-    await tester.pump();
+      await tester.pumpWidget(MaterialApp(home: TaskFlowShell(state: state)));
+      await tester.pump();
 
-    // First run with no data: the welcome screen is shown.
-    expect(find.text('Welcome to TaskFlow'), findsOneWidget);
-    expect(find.text('Create your first task'), findsOneWidget);
+      // First run with no data: the welcome screen is shown.
+      expect(find.text('Welcome to TaskFlow'), findsOneWidget);
 
-    // Tapping the CTA opens the new-task editor sheet.
-    await tester.tap(find.text('Create your first task'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('New task'), findsOneWidget);
-  });
+      // The floating action button is always visible and opens the editor.
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+
+      expect(find.text('New task'), findsOneWidget);
+    },
+  );
 }

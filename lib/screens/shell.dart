@@ -43,6 +43,7 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
   String _query = '';
   Task? _bannerTask;
   Timer? _reminderTimer;
+  Timer? _initReminderTimer;
 
   @override
   void initState() {
@@ -50,12 +51,13 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
     _reminderTimer = Timer.periodic(const Duration(seconds: 20), (_) {
       _checkReminders();
     });
-    Timer(const Duration(seconds: 2), _checkReminders);
+    _initReminderTimer = Timer(const Duration(seconds: 2), _checkReminders);
   }
 
   @override
   void dispose() {
     _reminderTimer?.cancel();
+    _initReminderTimer?.cancel();
     _searchFocus.dispose();
     _searchCtrl.dispose();
     super.dispose();
