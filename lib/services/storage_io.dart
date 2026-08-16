@@ -15,8 +15,11 @@ Future<Directory> _dataDir() async {
         return Directory(dir);
       }
     } catch (_) {
-      // Fall through to environment-based resolution.
+      // Channel unavailable (e.g. template MainActivity in CI builds):
+      // fall back to the app's cache directory, which dart:io exposes as
+      // systemTemp on Android/iOS.
     }
+    return Directory('${Directory.systemTemp.path}/taskflow');
   }
   final env = Platform.environment;
   final home = env['HOME'] ?? Directory.current.path;
