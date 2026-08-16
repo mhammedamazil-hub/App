@@ -1,0 +1,5 @@
+# Minimal analysis options — TaskFlow has no external lint packages so the
+# project keeps resolving offline.
+analyzer:
+  exclude:
+    - build/**

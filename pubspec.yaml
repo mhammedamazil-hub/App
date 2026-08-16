@@ -1,0 +1,22 @@
+name: taskflow
+description: "TaskFlow — an advanced, offline-first to-do list app built with Flutter."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+
+# TaskFlow intentionally ships with zero third-party dependencies.
+# Persistence uses dart:io on desktop/mobile and localStorage on the web,
+# so the app runs fully offline and builds with `flutter pub get` even
+# without network access.
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
