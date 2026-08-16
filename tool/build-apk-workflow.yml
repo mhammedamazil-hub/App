@@ -4,8 +4,8 @@ name: build-android-apk
 # (rolling tag `latest`) so anyone can download and install it:
 # https://github.com/mhammedamazil-hub/App/releases/latest
 #
-# Tests never block the release; the full test log is committed to ci-logs/
-# so failures can be diagnosed from the repo itself.
+# Tests never block the release; all logs (test + build) are force-committed
+# to ci-logs/ so failures can be diagnosed straight from the repo.
 
 on:
   push:
@@ -61,8 +61,11 @@ jobs:
           mkdir -p ci-logs
           flutter test --reporter expanded 2>&1 | tee ci-logs/test.log || true
 
-      - name: Build release APK
-        run: flutter build apk --release
+      - name: Build release APK (output captured to ci-logs/build.log)
+        run: |
+          mkdir -p ci-logs
+          set -o pipefail
+          flutter build apk --release 2>&1 | tee ci-logs/build.log
 
       - name: Publish release
         env:
@@ -75,11 +78,11 @@ jobs:
             --notes "Download taskflow.apk, open it on your Android phone and allow installs from unknown sources. Built from commit ${{ github.sha }}."
           echo "DOWNLOAD: https://github.com/${{ github.repository }}/releases/latest/download/taskflow.apk"
 
-      - name: Save logs to the repo
+      - name: Save logs to the repo (force-add: *.log is gitignored)
         if: always()
         run: |
           git config user.name "taskflow-ci"
           git config user.email "ci@taskflow.local"
-          git add ci-logs/ || true
+          git add -f ci-logs/ || true
           git commit -m "ci: build logs" || true
           git push origin HEAD:arena/01a008ff-app || true
