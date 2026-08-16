@@ -71,8 +71,7 @@ jobs:
             --notes "Download taskflow.apk, open it on your Android phone and allow installs from unknown sources. Built from commit ${{ github.sha }}."
           echo "DOWNLOAD: https://github.com/${{ github.repository }}/releases/latest/download/taskflow.apk"
 
-      - name: Save logs to the repo (force-add: *.log is gitignored)
-        if: always()
+      - name: Save logs to the repo
         run: |
           git config user.name "taskflow-ci"
           git config user.email "ci@taskflow.local"
