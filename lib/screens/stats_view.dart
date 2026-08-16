@@ -25,10 +25,9 @@ class StatsView extends StatelessWidget {
       children: [
         Text(
           'Your activity',
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
-              ?.copyWith(fontWeight: FontWeight.w800),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 16),
         LayoutBuilder(
@@ -36,10 +35,9 @@ class StatsView extends StatelessWidget {
             final cols = constraints.maxWidth >= 900
                 ? 4
                 : constraints.maxWidth >= 560
-                    ? 2
-                    : 1;
-            final cardW =
-                (constraints.maxWidth - (cols - 1) * 12.0) / cols;
+                ? 2
+                : 1;
+            final cardW = (constraints.maxWidth - (cols - 1) * 12.0) / cols;
             return Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -134,8 +132,8 @@ class StatsView extends StatelessWidget {
                               ? Icons.remove_circle_outline
                               : Icons.flag,
                           size: 16,
-                          color: priorityColor(
-                                  context, entry.priority.index) ??
+                          color:
+                              priorityColor(context, entry.priority.index) ??
                               scheme.outline,
                         ),
                         const SizedBox(width: 8),
@@ -146,7 +144,8 @@ class StatsView extends StatelessWidget {
                         ? 0
                         : entry.count / state.openCount,
                     trailing: '${entry.count}',
-                    color: priorityColor(context, entry.priority.index) ??
+                    color:
+                        priorityColor(context, entry.priority.index) ??
                         scheme.outline,
                   ),
               ],
@@ -250,9 +249,7 @@ class _Card extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
       ),
       child: child,
     );

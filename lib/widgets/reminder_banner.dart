@@ -43,8 +43,9 @@ class ReminderBanner extends StatelessWidget {
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.4,
-                        color: scheme.onTertiaryContainer
-                            .withValues(alpha: 0.8),
+                        color: scheme.onTertiaryContainer.withValues(
+                          alpha: 0.8,
+                        ),
                       ),
                     ),
                     Text(
@@ -60,8 +61,9 @@ class ReminderBanner extends StatelessWidget {
                       '${smartDate(at, now)} · ${fmtTime(at)}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: scheme.onTertiaryContainer
-                            .withValues(alpha: 0.8),
+                        color: scheme.onTertiaryContainer.withValues(
+                          alpha: 0.8,
+                        ),
                       ),
                     ),
                   ],
@@ -80,8 +82,10 @@ class ReminderBanner extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: scheme.onTertiaryContainer,
                   foregroundColor: scheme.tertiaryContainer,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                 ),
                 child: const Text('Open'),
               ),

@@ -12,11 +12,14 @@ class MemoryStorage implements Storage {
   Future<void> save(String value) async => data = value;
 }
 
-Task makeTask(String id, String title,
-    {String projectId = '',
-    TaskStatus status = TaskStatus.todo,
-    DateTime? dueAt,
-    RepeatRule repeat = RepeatRule.none}) {
+Task makeTask(
+  String id,
+  String title, {
+  String projectId = '',
+  TaskStatus status = TaskStatus.todo,
+  DateTime? dueAt,
+  RepeatRule repeat = RepeatRule.none,
+}) {
   return Task(
     id: id,
     title: title,
@@ -56,8 +59,9 @@ void main() {
     test('completing a repeating task spawns the next occurrence', () {
       final state = AppState(storage: MemoryStorage());
       final due = DateTime(2026, 8, 16, 9);
-      state.addTask(makeTask('r1', 'repeat me',
-          dueAt: due, repeat: RepeatRule.daily));
+      state.addTask(
+        makeTask('r1', 'repeat me', dueAt: due, repeat: RepeatRule.daily),
+      );
 
       final result = state.completeTask('r1');
       expect(result, isNotNull);
@@ -106,13 +110,20 @@ void main() {
   group('queries and stats', () {
     test('overdue, due today, completed', () {
       final state = AppState(storage: MemoryStorage());
-      state.addTask(makeTask('late', 'late task',
-          dueAt: DateTime(2026, 8, 15, 23, 59)));
-      state.addTask(makeTask('today', 'today task',
-          dueAt: DateTime(2026, 8, 16, 18)));
-      state.addTask(makeTask('done', 'done task',
+      state.addTask(
+        makeTask('late', 'late task', dueAt: DateTime(2026, 8, 15, 23, 59)),
+      );
+      state.addTask(
+        makeTask('today', 'today task', dueAt: DateTime(2026, 8, 16, 18)),
+      );
+      state.addTask(
+        makeTask(
+          'done',
+          'done task',
           status: TaskStatus.done,
-          dueAt: DateTime(2026, 8, 16, 10)));
+          dueAt: DateTime(2026, 8, 16, 10),
+        ),
+      );
 
       expect(state.overdueCount(now), 1);
       expect(state.dueTodayCount(now), 1);
@@ -125,12 +136,12 @@ void main() {
     test('streak counts consecutive completed days', () {
       final state = AppState(storage: MemoryStorage());
       Task completedOn(DateTime at) => Task(
-            id: 'id-$at',
-            title: 'done',
-            status: TaskStatus.done,
-            completedAt: at,
-            createdAt: at,
-          );
+        id: 'id-$at',
+        title: 'done',
+        status: TaskStatus.done,
+        completedAt: at,
+        createdAt: at,
+      );
       state.tasks.add(completedOn(now));
       state.tasks.add(completedOn(now.subtract(const Duration(days: 1))));
       state.tasks.add(completedOn(now.subtract(const Duration(days: 2))));
@@ -157,26 +168,32 @@ void main() {
 
     test('pending reminders exclude fired and done', () {
       final state = AppState(storage: MemoryStorage());
-      state.addTask(Task(
-        id: 'r1',
-        title: 'fire me',
-        reminderAt: now.subtract(const Duration(minutes: 5)),
-        createdAt: now,
-      ));
-      state.addTask(Task(
-        id: 'r2',
-        title: 'already fired',
-        reminderAt: now.subtract(const Duration(minutes: 5)),
-        reminderFired: true,
-        createdAt: now,
-      ));
-      state.addTask(Task(
-        id: 'r3',
-        title: 'done',
-        status: TaskStatus.done,
-        reminderAt: now.subtract(const Duration(minutes: 5)),
-        createdAt: now,
-      ));
+      state.addTask(
+        Task(
+          id: 'r1',
+          title: 'fire me',
+          reminderAt: now.subtract(const Duration(minutes: 5)),
+          createdAt: now,
+        ),
+      );
+      state.addTask(
+        Task(
+          id: 'r2',
+          title: 'already fired',
+          reminderAt: now.subtract(const Duration(minutes: 5)),
+          reminderFired: true,
+          createdAt: now,
+        ),
+      );
+      state.addTask(
+        Task(
+          id: 'r3',
+          title: 'done',
+          status: TaskStatus.done,
+          reminderAt: now.subtract(const Duration(minutes: 5)),
+          createdAt: now,
+        ),
+      );
 
       final pending = state.pendingReminders(now);
       expect(pending.length, 1);

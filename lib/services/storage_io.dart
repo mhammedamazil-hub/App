@@ -21,7 +21,9 @@ Future<Directory> _dataDir() async {
   final env = Platform.environment;
   final home = env['HOME'] ?? Directory.current.path;
   if (Platform.isLinux) {
-    return Directory('${env['XDG_DATA_HOME'] ?? '$home/.local/share'}/taskflow');
+    return Directory(
+      '${env['XDG_DATA_HOME'] ?? '$home/.local/share'}/taskflow',
+    );
   }
   if (Platform.isMacOS) {
     return Directory('$home/Library/Application Support/taskflow');
@@ -32,7 +34,8 @@ Future<Directory> _dataDir() async {
   return Directory('$home/.taskflow');
 }
 
-Future<File> _dataFile() async => File('${(await _dataDir()).path}/taskflow_data.json');
+Future<File> _dataFile() async =>
+    File('${(await _dataDir()).path}/taskflow_data.json');
 
 class IoStorage implements Storage {
   IoStorage();

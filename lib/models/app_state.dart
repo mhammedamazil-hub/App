@@ -76,9 +76,10 @@ class AppState extends ChangeNotifier {
         final data = jsonDecode(raw);
         if (data is Map<String, dynamic>) {
           settings = Settings.fromJson(
-              data['settings'] is Map<String, dynamic>
-                  ? data['settings'] as Map<String, dynamic>
-                  : const {});
+            data['settings'] is Map<String, dynamic>
+                ? data['settings'] as Map<String, dynamic>
+                : const {},
+          );
           projects = _parseProjects(data['projects']);
           tasks = _parseTasks(data['tasks']);
         }
@@ -121,11 +122,11 @@ class AppState extends ChangeNotifier {
   // -------------------------------------------------------------- persistence
 
   Map<String, dynamic> toJson() => {
-        'version': 1,
-        'settings': settings.toJson(),
-        'projects': projects.map((p) => p.toJson()).toList(),
-        'tasks': tasks.map((t) => t.toJson()).toList(),
-      };
+    'version': 1,
+    'settings': settings.toJson(),
+    'projects': projects.map((p) => p.toJson()).toList(),
+    'tasks': tasks.map((t) => t.toJson()).toList(),
+  };
 
   void _touch() {
     _dirty = true;
@@ -226,13 +227,10 @@ class AppState extends ChangeNotifier {
       final nextDue = advanceDate(t.dueAt!, t.repeat, after: now);
       if (nextDue != null) {
         final delta = nextDue.difference(t.dueAt!);
-        next = t
-            .repeatClone(
-                newDue: nextDue,
-                newReminder: t.reminderAt != null
-                    ? t.reminderAt!.add(delta)
-                    : null)
-          ..id = uid();
+        next = t.repeatClone(
+          newDue: nextDue,
+          newReminder: t.reminderAt != null ? t.reminderAt!.add(delta) : null,
+        )..id = uid();
         tasks.insert(0, next);
       }
     }
@@ -350,7 +348,11 @@ class AppState extends ChangeNotifier {
 
   Project addProject(String name, {int colorIndex = 0, int iconIndex = 0}) {
     final p = Project(
-        id: uid(), name: name.trim(), colorIndex: colorIndex, iconIndex: iconIndex);
+      id: uid(),
+      name: name.trim(),
+      colorIndex: colorIndex,
+      iconIndex: iconIndex,
+    );
     projects.add(p);
     _touch();
     return p;
@@ -392,35 +394,34 @@ class AppState extends ChangeNotifier {
   List<Task> get completedTasks =>
       tasks.where((t) => t.isDone).toList()..sort(_compareDoneTasks);
 
-  List<Task> openIn(String projectId) => openTasks
-      .where((t) => t.projectId == projectId)
+  List<Task> openIn(String projectId) =>
+      openTasks.where((t) => t.projectId == projectId).toList();
+
+  List<Task> completedIn(String projectId) =>
+      completedTasks.where((t) => t.projectId == projectId).toList();
+
+  List<Task> overdueTasks(DateTime now) =>
+      openTasks.where((t) => t.isOverdue(now)).toList()
+        ..sort((a, b) => a.dueAt!.compareTo(b.dueAt!));
+
+  List<Task> tasksDueToday(DateTime now) =>
+      openTasks.where((t) => t.isDueToday(now)).toList();
+
+  List<Task> completedToday(DateTime now) => completedTasks
+      .where((t) => t.completedAt != null && isSameDay(t.completedAt!, now))
       .toList();
-
-  List<Task> completedIn(String projectId) => completedTasks
-      .where((t) => t.projectId == projectId)
-      .toList();
-
-  List<Task> overdueTasks(DateTime now) => openTasks
-      .where((t) => t.isOverdue(now))
-      .toList()
-    ..sort((a, b) => a.dueAt!.compareTo(b.dueAt!));
-
-  List<Task> tasksDueToday(DateTime now) => openTasks
-      .where((t) => t.isDueToday(now))
-      .toList();
-
-  List<Task> completedToday(DateTime now) =>
-      completedTasks.where((t) => t.completedAt != null && isSameDay(t.completedAt!, now)).toList();
 
   /// Open tasks due within the next [days] days (starting today).
   List<Task> upcomingTasks(DateTime now, {int days = 14}) {
     final from = startOfDay(now);
     final to = startOfDay(now).add(Duration(days: days + 1));
     return openTasks
-        .where((t) =>
-            t.dueAt != null &&
-            !t.dueAt!.isBefore(from) &&
-            t.dueAt!.isBefore(to))
+        .where(
+          (t) =>
+              t.dueAt != null &&
+              !t.dueAt!.isBefore(from) &&
+              t.dueAt!.isBefore(to),
+        )
         .toList();
   }
 
@@ -432,23 +433,28 @@ class AppState extends ChangeNotifier {
         .toList();
   }
 
-  List<Task> pendingReminders(DateTime now) => tasks
-      .where((t) =>
-          t.reminderAt != null &&
-          !t.reminderFired &&
-          !t.isDone &&
-          t.reminderAt!.isBefore(now))
-      .toList()
-    ..sort((a, b) => a.reminderAt!.compareTo(b.reminderAt!));
+  List<Task> pendingReminders(DateTime now) =>
+      tasks
+          .where(
+            (t) =>
+                t.reminderAt != null &&
+                !t.reminderFired &&
+                !t.isDone &&
+                t.reminderAt!.isBefore(now),
+          )
+          .toList()
+        ..sort((a, b) => a.reminderAt!.compareTo(b.reminderAt!));
 
   List<Task> searchTasks(String query) {
     final q = query.trim().toLowerCase();
     if (q.isEmpty) return [];
     return tasks
-        .where((t) =>
-            t.title.toLowerCase().contains(q) ||
-            t.notes.toLowerCase().contains(q) ||
-            t.tags.any((tag) => tag.toLowerCase().contains(q)))
+        .where(
+          (t) =>
+              t.title.toLowerCase().contains(q) ||
+              t.notes.toLowerCase().contains(q) ||
+              t.tags.any((tag) => tag.toLowerCase().contains(q)),
+        )
         .toList()
       ..sort(_compareTasks);
   }
@@ -619,22 +625,24 @@ class AppState extends ChangeNotifier {
     final now = DateTime.now();
     final today = startOfDay(now);
     Task due({required String title, DateTime? at, String? notes}) => Task(
-          id: uid(),
-          title: title,
-          notes: notes ?? '',
-          dueAt: at,
-          createdAt: now,
-          updatedAt: now,
-        );
+      id: uid(),
+      title: title,
+      notes: notes ?? '',
+      dueAt: at,
+      createdAt: now,
+      updatedAt: now,
+    );
 
     final work = addProject('Work', colorIndex: 3, iconIndex: 1);
     final personal = addProject('Personal', colorIndex: 6, iconIndex: 2);
 
-    tasks.add(due(
-      title: 'Open a project and switch to the Kanban board',
-      notes: 'Use the view toggle in the project header.',
-      at: today.add(const Duration(hours: 11, minutes: 30)),
-    ));
+    tasks.add(
+      due(
+        title: 'Open a project and switch to the Kanban board',
+        notes: 'Use the view toggle in the project header.',
+        at: today.add(const Duration(hours: 11, minutes: 30)),
+      ),
+    );
     final tour = Task(
       id: uid(),
       title: 'Swipe right on a task to complete it',
@@ -650,76 +658,90 @@ class AppState extends ChangeNotifier {
       tags: ['getting-started'],
     );
     tasks.add(tour);
-    tasks.add(Task(
-      id: uid(),
-      title: 'Swipe left to delete (you can undo)',
-      priority: TaskPriority.medium,
-      dueAt: today.add(const Duration(hours: 18)),
-      createdAt: now,
-      updatedAt: now,
-    ));
-    tasks.add(Task(
-      id: uid(),
-      title: 'Weekly review — completes into a new occurrence',
-      notes: 'This task repeats every week.',
-      projectId: work.id,
-      repeat: RepeatRule.weekly,
-      dueAt: today.add(const Duration(days: 2, hours: 9)),
-      createdAt: now,
-      updatedAt: now,
-    ));
-    tasks.add(Task(
-      id: uid(),
-      title: 'Plan next week’s goals',
-      projectId: work.id,
-      priority: TaskPriority.medium,
-      dueAt: today.subtract(const Duration(days: 1, hours: 3)),
-      createdAt: now.subtract(const Duration(days: 2)),
-      updatedAt: now,
-      tags: ['work', 'planning'],
-    ));
-    tasks.add(Task(
-      id: uid(),
-      title: 'Groceries for the week',
-      projectId: personal.id,
-      priority: TaskPriority.low,
-      dueAt: today.add(const Duration(days: 3, hours: 17)),
-      createdAt: now,
-      updatedAt: now,
-      subtasks: [
-        Subtask(id: uid(), text: 'Milk', done: true),
-        Subtask(id: uid(), text: 'Eggs'),
-        Subtask(id: uid(), text: 'Coffee'),
-      ],
-    ));
-    tasks.add(Task(
-      id: uid(),
-      title: 'Draft the blog post outline',
-      projectId: work.id,
-      notes: 'Focus on the intro and three key sections.',
-      status: TaskStatus.doing,
-      dueAt: today.add(const Duration(days: 6, hours: 10)),
-      createdAt: now,
-      updatedAt: now,
-      tags: ['writing'],
-    ));
-    tasks.add(Task(
-      id: uid(),
-      title: 'Book a dentist appointment',
-      projectId: personal.id,
-      priority: TaskPriority.high,
-      dueAt: today.add(const Duration(days: 5, hours: 12)),
-      createdAt: now,
-      updatedAt: now,
-    ));
-    tasks.add(Task(
-      id: uid(),
-      title: 'I have a reminder set — it fires in-app',
-      dueAt: today.add(const Duration(hours: 2)),
-      reminderAt: now.add(const Duration(seconds: 45)),
-      createdAt: now,
-      updatedAt: now,
-    ));
+    tasks.add(
+      Task(
+        id: uid(),
+        title: 'Swipe left to delete (you can undo)',
+        priority: TaskPriority.medium,
+        dueAt: today.add(const Duration(hours: 18)),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    tasks.add(
+      Task(
+        id: uid(),
+        title: 'Weekly review — completes into a new occurrence',
+        notes: 'This task repeats every week.',
+        projectId: work.id,
+        repeat: RepeatRule.weekly,
+        dueAt: today.add(const Duration(days: 2, hours: 9)),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    tasks.add(
+      Task(
+        id: uid(),
+        title: 'Plan next week’s goals',
+        projectId: work.id,
+        priority: TaskPriority.medium,
+        dueAt: today.subtract(const Duration(days: 1, hours: 3)),
+        createdAt: now.subtract(const Duration(days: 2)),
+        updatedAt: now,
+        tags: ['work', 'planning'],
+      ),
+    );
+    tasks.add(
+      Task(
+        id: uid(),
+        title: 'Groceries for the week',
+        projectId: personal.id,
+        priority: TaskPriority.low,
+        dueAt: today.add(const Duration(days: 3, hours: 17)),
+        createdAt: now,
+        updatedAt: now,
+        subtasks: [
+          Subtask(id: uid(), text: 'Milk', done: true),
+          Subtask(id: uid(), text: 'Eggs'),
+          Subtask(id: uid(), text: 'Coffee'),
+        ],
+      ),
+    );
+    tasks.add(
+      Task(
+        id: uid(),
+        title: 'Draft the blog post outline',
+        projectId: work.id,
+        notes: 'Focus on the intro and three key sections.',
+        status: TaskStatus.doing,
+        dueAt: today.add(const Duration(days: 6, hours: 10)),
+        createdAt: now,
+        updatedAt: now,
+        tags: ['writing'],
+      ),
+    );
+    tasks.add(
+      Task(
+        id: uid(),
+        title: 'Book a dentist appointment',
+        projectId: personal.id,
+        priority: TaskPriority.high,
+        dueAt: today.add(const Duration(days: 5, hours: 12)),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    tasks.add(
+      Task(
+        id: uid(),
+        title: 'I have a reminder set — it fires in-app',
+        dueAt: today.add(const Duration(hours: 2)),
+        reminderAt: now.add(const Duration(seconds: 45)),
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
     // Seed the streak with a couple of completed tasks.
     final doneSeed = Task(
       id: uid(),
@@ -748,21 +770,21 @@ class AppState extends ChangeNotifier {
 
   /// Copies top-level fields; nested lists are shared on purpose.
   Task _shallowCopyTask(Task t) => Task(
-        id: t.id,
-        title: t.title,
-        notes: t.notes,
-        projectId: t.projectId,
-        priority: t.priority,
-        status: t.status,
-        dueAt: t.dueAt,
-        reminderAt: t.reminderAt,
-        repeat: t.repeat,
-        tags: List.of(t.tags),
-        subtasks: t.subtasks,
-        pinned: t.pinned,
-        reminderFired: t.reminderFired,
-        createdAt: t.createdAt,
-        completedAt: t.completedAt,
-        updatedAt: t.updatedAt,
-      );
+    id: t.id,
+    title: t.title,
+    notes: t.notes,
+    projectId: t.projectId,
+    priority: t.priority,
+    status: t.status,
+    dueAt: t.dueAt,
+    reminderAt: t.reminderAt,
+    repeat: t.repeat,
+    tags: List.of(t.tags),
+    subtasks: t.subtasks,
+    pinned: t.pinned,
+    reminderFired: t.reminderFired,
+    createdAt: t.createdAt,
+    completedAt: t.completedAt,
+    updatedAt: t.updatedAt,
+  );
 }

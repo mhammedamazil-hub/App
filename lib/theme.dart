@@ -43,11 +43,9 @@ const List<IconData> projectIcons = [
   Icons.savings_outlined,
 ];
 
-Color projectColor(int index) =>
-    projectColors[index % projectColors.length];
+Color projectColor(int index) => projectColors[index % projectColors.length];
 
-IconData projectIcon(int index) =>
-    projectIcons[index % projectIcons.length];
+IconData projectIcon(int index) => projectIcons[index % projectIcons.length];
 
 /// Priority accent colors (index by `TaskPriority.index`).
 Color? priorityColor(BuildContext context, int priorityIndex) {
@@ -87,8 +85,7 @@ ThemeData buildTheme({required Color seed, required Brightness brightness}) {
         borderSide: BorderSide.none,
       ),
       isDense: true,
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,

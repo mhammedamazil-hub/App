@@ -26,9 +26,7 @@ class StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,10 +56,9 @@ class StatCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(fontWeight: FontWeight.w800),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 2),
           Text(
@@ -91,9 +88,7 @@ class WeekBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final maxVal = values.isEmpty
-        ? 1
-        : values.reduce((a, b) => a > b ? a : b);
+    final maxVal = values.isEmpty ? 1 : values.reduce((a, b) => a > b ? a : b);
     final safeMax = maxVal == 0 ? 1 : maxVal;
     return SizedBox(
       height: 130,
@@ -125,7 +120,8 @@ class WeekBarChart extends StatelessWidget {
                           ? scheme.surfaceContainerHighest
                           : color,
                       borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(6)),
+                        top: Radius.circular(6),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),

@@ -37,14 +37,18 @@ class TaskTile extends StatelessWidget {
     final overdue = task.isOverdue(now);
     final priority = priorityColor(context, task.priority.index);
 
-    final titleStyle = (done ? Theme.of(context).textTheme.bodyMedium : Theme.of(context).textTheme.bodyLarge)?.copyWith(
-      decoration: done ? TextDecoration.lineThrough : null,
-      color: done
-          ? scheme.onSurfaceVariant.withValues(alpha: 0.7)
-          : scheme.onSurface,
-      fontWeight: done ? FontWeight.w400 : FontWeight.w600,
-      height: 1.3,
-    );
+    final titleStyle =
+        (done
+                ? Theme.of(context).textTheme.bodyMedium
+                : Theme.of(context).textTheme.bodyLarge)
+            ?.copyWith(
+              decoration: done ? TextDecoration.lineThrough : null,
+              color: done
+                  ? scheme.onSurfaceVariant.withValues(alpha: 0.7)
+                  : scheme.onSurface,
+              fontWeight: done ? FontWeight.w400 : FontWeight.w600,
+              height: 1.3,
+            );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
@@ -109,9 +113,7 @@ class TaskTile extends StatelessWidget {
                           task.notes,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
+                          style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ],
@@ -121,14 +123,12 @@ class TaskTile extends StatelessWidget {
                         runSpacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          if (task.hasDue)
-                            DueBadge(task: task, now: now),
+                          if (task.hasDue) DueBadge(task: task, now: now),
                           if (task.priority != TaskPriority.none)
                             PriorityFlag(priority: task.priority),
                           if (task.repeat != RepeatRule.none)
                             RepeatChip(rule: task.repeat),
-                          if (task.subtasks.isNotEmpty)
-                            SubtaskChip(task: task),
+                          if (task.subtasks.isNotEmpty) SubtaskChip(task: task),
                           for (final tag in task.tags.take(2))
                             TagChip(text: tag),
                           if (task.tags.length > 2)
@@ -149,11 +149,7 @@ class TaskTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (onMenu != null)
-                  _TileMenu(
-                    task: task,
-                    onSelected: onMenu,
-                  ),
+                if (onMenu != null) _TileMenu(task: task, onSelected: onMenu),
               ],
             ),
           ),
@@ -194,7 +190,8 @@ class _TileMenu extends StatelessWidget {
           value: TileMenuAction.pin,
           child: ListTile(
             leading: Icon(
-                task.pinned ? Icons.push_pin : Icons.push_pin_outlined),
+              task.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+            ),
             title: Text(task.pinned ? 'Unpin' : 'Pin'),
             contentPadding: EdgeInsets.zero,
             dense: true,
@@ -231,8 +228,10 @@ class _TileMenu extends StatelessWidget {
         PopupMenuItem(
           value: TileMenuAction.delete,
           child: ListTile(
-            leading: Icon(Icons.delete_outline,
-                color: Theme.of(context).colorScheme.error),
+            leading: Icon(
+              Icons.delete_outline,
+              color: Theme.of(context).colorScheme.error,
+            ),
             title: Text(
               'Delete',
               style: TextStyle(color: Theme.of(context).colorScheme.error),

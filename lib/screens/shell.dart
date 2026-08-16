@@ -145,8 +145,7 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Delete “${project.name}”?'),
-        content: const Text(
-            'Its tasks move to the Inbox. You can undo this.'),
+        content: const Text('Its tasks move to the Inbox. You can undo this.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -168,11 +167,13 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
     setState(() {
       if (_projectId == project.id) _projectId = null;
     });
-    messenger.showSnackBar(SnackBar(
-      content: Text('Project “${project.name}” deleted.'),
-      duration: const Duration(seconds: 6),
-      action: SnackBarAction(label: 'Undo', onPressed: () => state.undo()),
-    ));
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('Project “${project.name}” deleted.'),
+        duration: const Duration(seconds: 6),
+        action: SnackBarAction(label: 'Undo', onPressed: () => state.undo()),
+      ),
+    );
   }
 
   // ------------------------------------------------------------------ build
@@ -222,8 +223,7 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
                       setState(() => _query = '');
                       _searchFocus.unfocus();
                     },
-                    onOpenDrawer: () =>
-                        _scaffoldKey.currentState?.openDrawer(),
+                    onOpenDrawer: () => _scaffoldKey.currentState?.openDrawer(),
                     showBack: !isWide && _projectId != null,
                     onBack: _clearProject,
                     onToggleTheme: _toggleTheme,
@@ -250,8 +250,7 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
             ),
           ],
         ),
-        floatingActionButton: _query.trim().isEmpty &&
-                !_isNonTaskView()
+        floatingActionButton: _query.trim().isEmpty && !_isNonTaskView()
             ? FloatingActionButton(
                 tooltip: 'New task (Ctrl+N)',
                 onPressed: () => _newTask(),
@@ -399,10 +398,7 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
   Widget _buildBody() {
     final now = DateTime.now();
     if (!state.settings.welcomeSeen && state.tasks.isEmpty) {
-      return WelcomeView(
-        state: state,
-        onAddTask: () => _newTask(),
-      );
+      return WelcomeView(state: state, onAddTask: () => _newTask());
     }
     if (_query.trim().isNotEmpty) {
       return SearchView(
@@ -522,8 +518,12 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
       case 'export':
         try {
           final message = await state.exportBackupNow();
-          messenger.showSnackBar(SnackBar(
-              content: Text(message), duration: const Duration(seconds: 4)));
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(seconds: 4),
+            ),
+          );
         } catch (e) {
           messenger.showSnackBar(SnackBar(content: Text('$e')));
         }
@@ -531,8 +531,9 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
         await _importFromMenu(messenger);
       case 'sample':
         state.loadSampleData();
-        messenger.showSnackBar(const SnackBar(
-            content: Text('Sample data loaded. Enjoy exploring!')));
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Sample data loaded. Enjoy exploring!')),
+        );
       case 'about':
         await _showAbout();
     }
@@ -544,8 +545,9 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
       builder: (context) => AlertDialog(
         title: const Text('Import backup?'),
         content: const Text(
-            'This replaces all current tasks and projects with the backup. '
-            'You can undo afterwards.'),
+          'This replaces all current tasks and projects with the backup. '
+          'You can undo afterwards.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -563,14 +565,17 @@ class _TaskFlowShellState extends State<TaskFlowShell> {
       final summary = await state.importBackupNow();
       if (summary == null) {
         messenger.showSnackBar(
-            const SnackBar(content: Text('Import cancelled.')));
+          const SnackBar(content: Text('Import cancelled.')),
+        );
         return;
       }
-      messenger.showSnackBar(SnackBar(
-        content: Text(summary),
-        duration: const Duration(seconds: 6),
-        action: SnackBarAction(label: 'Undo', onPressed: () => state.undo()),
-      ));
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(summary),
+          duration: const Duration(seconds: 6),
+          action: SnackBarAction(label: 'Undo', onPressed: () => state.undo()),
+        ),
+      );
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('$e')));
     }
@@ -649,9 +654,7 @@ class _Header extends StatelessWidget {
             IconButton(
               tooltip: showBack ? 'Back' : 'Menu',
               onPressed: showBack ? onBack : onOpenDrawer,
-              icon: Icon(
-                  showBack ? Icons.arrow_back : Icons.menu,
-                  size: 20),
+              icon: Icon(showBack ? Icons.arrow_back : Icons.menu, size: 20),
             ),
             const SizedBox(width: 4),
           ],
@@ -663,10 +666,9 @@ class _Header extends StatelessWidget {
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w800),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 if (subtitle.isNotEmpty)
                   Text(
@@ -674,7 +676,9 @@ class _Header extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                        fontSize: 12.5, color: scheme.onSurfaceVariant),
+                      fontSize: 12.5,
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
               ],
             ),
@@ -702,8 +706,7 @@ class _Header extends StatelessWidget {
                   onChanged: onQueryChanged,
                   decoration: InputDecoration(
                     hintText: 'Search tasks…  (Ctrl+K)',
-                    prefixIcon:
-                        const Icon(Icons.search, size: 18),
+                    prefixIcon: const Icon(Icons.search, size: 18),
                     suffixIcon: query.isEmpty
                         ? null
                         : IconButton(
@@ -711,8 +714,7 @@ class _Header extends StatelessWidget {
                             icon: const Icon(Icons.close, size: 16),
                             onPressed: onClearQuery,
                           ),
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   ),
                 ),
               ),
@@ -726,7 +728,11 @@ class _Header extends StatelessWidget {
           ),
           PopupMenuButton<String>(
             tooltip: 'More',
-            icon: Icon(Icons.more_vert, size: 18, color: scheme.onSurfaceVariant),
+            icon: Icon(
+              Icons.more_vert,
+              size: 18,
+              color: scheme.onSurfaceVariant,
+            ),
             onSelected: onMenu,
             itemBuilder: (context) => const [
               PopupMenuItem(
@@ -792,4 +798,3 @@ class _Header extends StatelessWidget {
 class _ClearSearchIntent extends Intent {
   const _ClearSearchIntent();
 }
-

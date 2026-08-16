@@ -65,20 +65,15 @@ class Sidebar extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(9),
                     ),
-                    child: Icon(
-                      Icons.check,
-                      size: 19,
-                      color: scheme.onPrimary,
-                    ),
+                    child: Icon(Icons.check, size: 19, color: scheme.onPrimary),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'TaskFlow',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w800),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                 ],
@@ -94,7 +89,8 @@ class Sidebar extends StatelessWidget {
                     selectedIcon: Icons.inbox,
                     label: 'Inbox',
                     count: counts['inbox'] ?? 0,
-                    selected: selectedSmart == SmartList.inbox &&
+                    selected:
+                        selectedSmart == SmartList.inbox &&
                         selectedProjectId == null,
                     onTap: () => onSelectSmart(SmartList.inbox),
                   ),
@@ -103,8 +99,11 @@ class Sidebar extends StatelessWidget {
                     selectedIcon: Icons.today,
                     label: 'Today',
                     count: counts['today'] ?? 0,
-                    countColor: (counts['overdue'] ?? 0) > 0 ? scheme.error : null,
-                    selected: selectedSmart == SmartList.today &&
+                    countColor: (counts['overdue'] ?? 0) > 0
+                        ? scheme.error
+                        : null,
+                    selected:
+                        selectedSmart == SmartList.today &&
                         selectedProjectId == null,
                     onTap: () => onSelectSmart(SmartList.today),
                   ),
@@ -113,7 +112,8 @@ class Sidebar extends StatelessWidget {
                     selectedIcon: Icons.event_upcoming,
                     label: 'Upcoming',
                     count: counts['upcoming'] ?? 0,
-                    selected: selectedSmart == SmartList.upcoming &&
+                    selected:
+                        selectedSmart == SmartList.upcoming &&
                         selectedProjectId == null,
                     onTap: () => onSelectSmart(SmartList.upcoming),
                   ),
@@ -123,7 +123,8 @@ class Sidebar extends StatelessWidget {
                     label: 'Overdue',
                     count: counts['overdue'] ?? 0,
                     countColor: scheme.error,
-                    selected: selectedSmart == SmartList.overdue &&
+                    selected:
+                        selectedSmart == SmartList.overdue &&
                         selectedProjectId == null,
                     onTap: () => onSelectSmart(SmartList.overdue),
                   ),
@@ -132,7 +133,8 @@ class Sidebar extends StatelessWidget {
                     selectedIcon: Icons.done_all,
                     label: 'Completed',
                     count: counts['completed'] ?? 0,
-                    selected: selectedSmart == SmartList.completed &&
+                    selected:
+                        selectedSmart == SmartList.completed &&
                         selectedProjectId == null,
                     onTap: () => onSelectSmart(SmartList.completed),
                   ),
@@ -141,7 +143,8 @@ class Sidebar extends StatelessWidget {
                     selectedIcon: Icons.layers,
                     label: 'All tasks',
                     count: counts['all'] ?? 0,
-                    selected: selectedSmart == SmartList.all &&
+                    selected:
+                        selectedSmart == SmartList.all &&
                         selectedProjectId == null,
                     onTap: () => onSelectSmart(SmartList.all),
                   ),
@@ -304,16 +307,21 @@ class _NavItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13.5,
                       fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                      color: selected ? scheme.onSurface : scheme.onSurfaceVariant,
+                      color: selected
+                          ? scheme.onSurface
+                          : scheme.onSurfaceVariant,
                     ),
                   ),
                 ),
                 if (count != null && count! > 0)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
-                      color: countColor ??
+                      color:
+                          countColor ??
                           (selected
                               ? scheme.secondary.withValues(alpha: 0.25)
                               : scheme.surfaceContainerHighest),
@@ -324,8 +332,11 @@ class _NavItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: countColor ??
-                            (selected ? scheme.primary : scheme.onSurfaceVariant),
+                        color:
+                            countColor ??
+                            (selected
+                                ? scheme.primary
+                                : scheme.onSurfaceVariant),
                       ),
                     ),
                   ),

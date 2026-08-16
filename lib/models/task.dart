@@ -27,8 +27,11 @@ String repeatLabel(RepeatRule r) {
 
 /// Computes the next occurrence of [base] under [rule], strictly after
 /// [after]. Returns null when the rule is `none`.
-DateTime? advanceDate(DateTime base, RepeatRule rule,
-    {required DateTime after}) {
+DateTime? advanceDate(
+  DateTime base,
+  RepeatRule rule, {
+  required DateTime after,
+}) {
   if (rule == RepeatRule.none) return null;
   switch (rule) {
     case RepeatRule.none:
@@ -66,27 +69,50 @@ DateTime? advanceDate(DateTime base, RepeatRule rule,
         m = 1;
         y++;
       }
-      var next = DateTime(y, m, math.min(day, daysInMonth(y, m)), base.hour,
-          base.minute, base.second);
+      var next = DateTime(
+        y,
+        m,
+        math.min(day, daysInMonth(y, m)),
+        base.hour,
+        base.minute,
+        base.second,
+      );
       while (!next.isAfter(after)) {
         m++;
         if (m > 12) {
           m = 1;
           y++;
         }
-        next = DateTime(y, m, math.min(day, daysInMonth(y, m)), base.hour,
-            base.minute, base.second);
+        next = DateTime(
+          y,
+          m,
+          math.min(day, daysInMonth(y, m)),
+          base.hour,
+          base.minute,
+          base.second,
+        );
       }
       return next;
     case RepeatRule.yearly:
       var y = base.year + 1;
-      var next = DateTime(y, base.month, math.min(base.day, daysInMonth(y, base.month)),
-          base.hour, base.minute, base.second);
+      var next = DateTime(
+        y,
+        base.month,
+        math.min(base.day, daysInMonth(y, base.month)),
+        base.hour,
+        base.minute,
+        base.second,
+      );
       while (!next.isAfter(after)) {
         y++;
-        next = DateTime(y, base.month,
-            math.min(base.day, daysInMonth(y, base.month)), base.hour,
-            base.minute, base.second);
+        next = DateTime(
+          y,
+          base.month,
+          math.min(base.day, daysInMonth(y, base.month)),
+          base.hour,
+          base.minute,
+          base.second,
+        );
       }
       return next;
   }
@@ -104,10 +130,10 @@ class Subtask {
   Subtask({required this.id, required this.text, this.done = false});
 
   factory Subtask.fromJson(Map<String, dynamic> j) => Subtask(
-        id: j['id'] as String? ?? '',
-        text: j['text'] as String? ?? '',
-        done: j['done'] == true,
-      );
+    id: j['id'] as String? ?? '',
+    text: j['text'] as String? ?? '',
+    done: j['done'] == true,
+  );
 
   String id;
   String text;
@@ -136,8 +162,8 @@ class Task {
     required this.createdAt,
     this.completedAt,
     this.updatedAt,
-  })  : tags = tags ?? [],
-        subtasks = subtasks ?? [];
+  }) : tags = tags ?? [],
+       subtasks = subtasks ?? [];
 
   factory Task.fromJson(Map<String, dynamic> j) {
     int enumIndex(Object? v, int fallback) {
@@ -169,14 +195,15 @@ class Task {
           : [],
       subtasks: (j['subtasks'] is List)
           ? (j['subtasks'] as List)
-              .whereType<Map<String, dynamic>>()
-              .map(Subtask.fromJson)
-              .toList()
+                .whereType<Map<String, dynamic>>()
+                .map(Subtask.fromJson)
+                .toList()
           : [],
       pinned: j['pinned'] == true,
       reminderFired: j['reminderFired'] == true,
       createdAt:
-          _dateFromJson(j['createdAt']) ?? DateTime.fromMillisecondsSinceEpoch(0),
+          _dateFromJson(j['createdAt']) ??
+          DateTime.fromMillisecondsSinceEpoch(0),
       completedAt: _dateFromJson(j['completedAt']),
       updatedAt: _dateFromJson(j['updatedAt']),
     );
@@ -200,23 +227,23 @@ class Task {
   DateTime? updatedAt;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'notes': notes,
-        'projectId': projectId,
-        'priority': priority.index,
-        'status': status.index,
-        'dueAt': _dateToJson(dueAt),
-        'reminderAt': _dateToJson(reminderAt),
-        'repeat': repeat.index,
-        'tags': tags,
-        'subtasks': subtasks.map((s) => s.toJson()).toList(),
-        'pinned': pinned,
-        'reminderFired': reminderFired,
-        'createdAt': _dateToJson(createdAt),
-        'completedAt': _dateToJson(completedAt),
-        'updatedAt': _dateToJson(updatedAt),
-      };
+    'id': id,
+    'title': title,
+    'notes': notes,
+    'projectId': projectId,
+    'priority': priority.index,
+    'status': status.index,
+    'dueAt': _dateToJson(dueAt),
+    'reminderAt': _dateToJson(reminderAt),
+    'repeat': repeat.index,
+    'tags': tags,
+    'subtasks': subtasks.map((s) => s.toJson()).toList(),
+    'pinned': pinned,
+    'reminderFired': reminderFired,
+    'createdAt': _dateToJson(createdAt),
+    'completedAt': _dateToJson(completedAt),
+    'updatedAt': _dateToJson(updatedAt),
+  };
 
   int get doneSubtasks => subtasks.where((s) => s.done).length;
 
@@ -245,41 +272,41 @@ class Task {
 
   /// Deep copy used when spawning the next occurrence of a repeating task.
   Task repeatClone({required DateTime newDue, DateTime? newReminder}) => Task(
-        id: '',
-        title: title,
-        notes: notes,
-        projectId: projectId,
-        priority: priority,
-        status: TaskStatus.todo,
-        dueAt: newDue,
-        reminderAt: newReminder,
-        repeat: repeat,
-        tags: List.of(tags),
-        subtasks: subtasks.map((s) => s.copy()).toList(),
-        pinned: pinned,
-        reminderFired: false,
-        createdAt: DateTime.now(),
-        completedAt: null,
-        updatedAt: DateTime.now(),
-      );
+    id: '',
+    title: title,
+    notes: notes,
+    projectId: projectId,
+    priority: priority,
+    status: TaskStatus.todo,
+    dueAt: newDue,
+    reminderAt: newReminder,
+    repeat: repeat,
+    tags: List.of(tags),
+    subtasks: subtasks.map((s) => s.copy()).toList(),
+    pinned: pinned,
+    reminderFired: false,
+    createdAt: DateTime.now(),
+    completedAt: null,
+    updatedAt: DateTime.now(),
+  );
 
   /// Copy used by "duplicate task".
   Task duplicate() => Task(
-        id: '',
-        title: title,
-        notes: notes,
-        projectId: projectId,
-        priority: priority,
-        status: TaskStatus.todo,
-        dueAt: dueAt,
-        reminderAt: reminderAt,
-        repeat: RepeatRule.none,
-        tags: List.of(tags),
-        subtasks: subtasks.map((s) => s.copy()).toList(),
-        pinned: false,
-        reminderFired: false,
-        createdAt: DateTime.now(),
-        completedAt: null,
-        updatedAt: null,
-      );
+    id: '',
+    title: title,
+    notes: notes,
+    projectId: projectId,
+    priority: priority,
+    status: TaskStatus.todo,
+    dueAt: dueAt,
+    reminderAt: reminderAt,
+    repeat: RepeatRule.none,
+    tags: List.of(tags),
+    subtasks: subtasks.map((s) => s.copy()).toList(),
+    pinned: false,
+    reminderFired: false,
+    createdAt: DateTime.now(),
+    completedAt: null,
+    updatedAt: null,
+  );
 }

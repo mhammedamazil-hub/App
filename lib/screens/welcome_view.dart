@@ -4,11 +4,7 @@ import '../models/app_state.dart';
 
 /// First-run welcome screen.
 class WelcomeView extends StatelessWidget {
-  const WelcomeView({
-    super.key,
-    required this.state,
-    required this.onAddTask,
-  });
+  const WelcomeView({super.key, required this.state, required this.onAddTask});
 
   final AppState state;
   final VoidCallback onAddTask;
@@ -50,20 +46,19 @@ class WelcomeView extends StatelessWidget {
               const SizedBox(height: 28),
               Text(
                 'Welcome to TaskFlow',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(fontWeight: FontWeight.w800),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 'An advanced to-do list that lives on your device. '
                 'No account, no cloud, no noise.',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(color: scheme.onSurfaceVariant, height: 1.5),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  height: 1.5,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 28),
@@ -72,14 +67,26 @@ class WelcomeView extends StatelessWidget {
                 runSpacing: 10,
                 alignment: WrapAlignment.center,
                 children: const [
-                  _FeatureChip(icon: Icons.today_outlined, label: 'Smart lists'),
-                  _FeatureChip(icon: Icons.view_kanban_outlined, label: 'Kanban board'),
+                  _FeatureChip(
+                    icon: Icons.today_outlined,
+                    label: 'Smart lists',
+                  ),
+                  _FeatureChip(
+                    icon: Icons.view_kanban_outlined,
+                    label: 'Kanban board',
+                  ),
                   _FeatureChip(icon: Icons.checklist, label: 'Subtasks'),
                   _FeatureChip(icon: Icons.flag_outlined, label: 'Priorities'),
                   _FeatureChip(icon: Icons.repeat, label: 'Repeating tasks'),
                   _FeatureChip(icon: Icons.alarm, label: 'Reminders'),
-                  _FeatureChip(icon: Icons.local_fire_department_outlined, label: 'Streaks'),
-                  _FeatureChip(icon: Icons.offline_bolt_outlined, label: 'Offline'),
+                  _FeatureChip(
+                    icon: Icons.local_fire_department_outlined,
+                    label: 'Streaks',
+                  ),
+                  _FeatureChip(
+                    icon: Icons.offline_bolt_outlined,
+                    label: 'Offline',
+                  ),
                 ],
               ),
               const SizedBox(height: 32),
@@ -125,9 +132,7 @@ class _FeatureChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.5),
-        ),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.5)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -136,8 +141,7 @@ class _FeatureChip extends StatelessWidget {
           const SizedBox(width: 7),
           Text(
             label,
-            style: const TextStyle(
-                fontSize: 12.5, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
           ),
         ],
       ),

@@ -56,7 +56,8 @@ class ProjectView extends StatelessWidget {
               color: scheme.surfaceContainerLow,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                  color: scheme.outlineVariant.withValues(alpha: 0.4)),
+                color: scheme.outlineVariant.withValues(alpha: 0.4),
+              ),
             ),
             child: Row(
               children: [
@@ -72,9 +73,7 @@ class ProjectView extends StatelessWidget {
                     children: [
                       Text(
                         project.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
+                        style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 6),
@@ -86,10 +85,10 @@ class ProjectView extends StatelessWidget {
                               child: LinearProgressIndicator(
                                 value: rate.clamp(0.0, 1.0),
                                 minHeight: 6,
-                                backgroundColor:
-                                    scheme.surfaceContainerHighest,
+                                backgroundColor: scheme.surfaceContainerHighest,
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                    projectColor(project.colorIndex)),
+                                  projectColor(project.colorIndex),
+                                ),
                               ),
                             ),
                           ),
@@ -128,8 +127,11 @@ class ProjectView extends StatelessWidget {
                 ),
                 PopupMenuButton<String>(
                   tooltip: 'Project options',
-                  icon: Icon(Icons.more_vert,
-                      size: 18, color: scheme.onSurfaceVariant),
+                  icon: Icon(
+                    Icons.more_vert,
+                    size: 18,
+                    color: scheme.onSurfaceVariant,
+                  ),
                   onSelected: (value) {
                     if (value == 'edit') onEditProject();
                     if (value == 'delete') onDeleteProject();
@@ -147,10 +149,11 @@ class ProjectView extends StatelessWidget {
                     PopupMenuItem(
                       value: 'delete',
                       child: ListTile(
-                        leading: Icon(Icons.delete_outline,
-                            color: Colors.red),
-                        title: Text('Delete project',
-                            style: TextStyle(color: Colors.red)),
+                        leading: Icon(Icons.delete_outline, color: Colors.red),
+                        title: Text(
+                          'Delete project',
+                          style: TextStyle(color: Colors.red),
+                        ),
                         contentPadding: EdgeInsets.zero,
                         dense: true,
                       ),

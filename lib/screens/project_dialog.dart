@@ -70,9 +70,7 @@ class _ProjectDialogState extends State<_ProjectDialog> {
                   child: TextField(
                     controller: _nameCtrl,
                     autofocus: !editing,
-                    decoration: const InputDecoration(
-                      hintText: 'Project name',
-                    ),
+                    decoration: const InputDecoration(hintText: 'Project name'),
                   ),
                 ),
               ],
@@ -106,8 +104,11 @@ class _ProjectDialogState extends State<_ProjectDialog> {
                             : null,
                       ),
                       child: _colorIndex == i
-                          ? const Icon(Icons.check,
-                              size: 13, color: Colors.white)
+                          ? const Icon(
+                              Icons.check,
+                              size: 13,
+                              color: Colors.white,
+                            )
                           : null,
                     ),
                   ),
@@ -137,12 +138,15 @@ class _ProjectDialogState extends State<_ProjectDialog> {
                       decoration: BoxDecoration(
                         color: _iconIndex == i
                             ? projectColor(_colorIndex).withValues(alpha: 0.2)
-                            : scheme.surfaceContainerHighest
-                                .withValues(alpha: 0.5),
+                            : scheme.surfaceContainerHighest.withValues(
+                                alpha: 0.5,
+                              ),
                         borderRadius: BorderRadius.circular(10),
                         border: _iconIndex == i
                             ? Border.all(
-                                color: projectColor(_colorIndex), width: 1.5)
+                                color: projectColor(_colorIndex),
+                                width: 1.5,
+                              )
                             : null,
                       ),
                       child: Icon(

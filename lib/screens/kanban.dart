@@ -27,8 +27,7 @@ class KanbanView extends StatelessWidget {
     final byStatus = <TaskStatus, List<Task>>{
       for (final s in TaskStatus.values)
         s: state.tasks
-            .where((t) =>
-                t.projectId == projectId && t.status == s)
+            .where((t) => t.projectId == projectId && t.status == s)
             .toList(),
     };
 
@@ -110,7 +109,9 @@ class _KanbanColumn extends StatelessWidget {
                 Text(
                   _statusName,
                   style: const TextStyle(
-                      fontSize: 13.5, fontWeight: FontWeight.w800),
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(width: 6),
                 Text(
@@ -160,9 +161,11 @@ class _KanbanColumn extends StatelessWidget {
                         padding: const EdgeInsets.all(24),
                         child: Column(
                           children: [
-                            Icon(Icons.inbox_outlined,
-                                size: 30,
-                                color: scheme.outlineVariant),
+                            Icon(
+                              Icons.inbox_outlined,
+                              size: 30,
+                              color: scheme.outlineVariant,
+                            ),
                             const SizedBox(height: 8),
                             Text(
                               'Drop tasks here',
@@ -298,13 +301,11 @@ class _KanbanCard extends StatelessWidget {
                 children: [
                   if (task.hasDue)
                     DueBadge(task: task, now: now, compact: true),
-                  if (task.subtasks.isNotEmpty)
-                    SubtaskChip(task: task),
+                  if (task.subtasks.isNotEmpty) SubtaskChip(task: task),
                   if (task.priority.index > 0)
                     PriorityFlag(priority: task.priority),
                   if (task.pinned)
-                    Icon(Icons.push_pin,
-                        size: 13, color: scheme.tertiary),
+                    Icon(Icons.push_pin, size: 13, color: scheme.tertiary),
                 ],
               ),
             ],
@@ -350,7 +351,9 @@ class _KanbanCard extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 13),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ),

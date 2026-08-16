@@ -35,7 +35,8 @@ Future<String?> pickImportFile() async {
       final text = await _channel.invokeMethod<String>('getClipboard');
       if (text != null && text.trim().isNotEmpty) return text;
       throw Exception(
-          'The clipboard has no TaskFlow backup. Copy one there first.');
+        'The clipboard has no TaskFlow backup. Copy one there first.',
+      );
     } catch (e) {
       rethrow;
     }
@@ -53,5 +54,6 @@ Future<String?> pickImportFile() async {
     }
   }
   throw Exception(
-      'No import file found. Place your backup at ${candidates.first} and try again.');
+    'No import file found. Place your backup at ${candidates.first} and try again.',
+  );
 }

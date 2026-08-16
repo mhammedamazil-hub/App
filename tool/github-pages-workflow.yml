@@ -8,7 +8,7 @@ name: build-web
 
 on:
   push:
-    branches: ["arena/01a008ff-app"]
+    branches: ["main", "arena/01a008ff-app"]
   workflow_dispatch:
 
 permissions:

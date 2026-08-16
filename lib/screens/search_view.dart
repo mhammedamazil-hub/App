@@ -29,7 +29,8 @@ class SearchView extends StatelessWidget {
       return EmptyState(
         icon: Icons.search_off_outlined,
         title: 'No matches',
-        message: 'Nothing found for “${query.trim()}”. Try a different '
+        message:
+            'Nothing found for “${query.trim()}”. Try a different '
             'keyword — titles, notes and tags are searched.',
       );
     }

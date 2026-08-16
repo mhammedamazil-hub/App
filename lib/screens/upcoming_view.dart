@@ -29,7 +29,8 @@ class UpcomingView extends StatelessWidget {
       return EmptyState(
         icon: Icons.event_available_outlined,
         title: 'Nothing scheduled',
-        message: 'Tasks with a due date in the next two weeks will show up here.',
+        message:
+            'Tasks with a due date in the next two weeks will show up here.',
       );
     }
 
@@ -52,7 +53,11 @@ class UpcomingView extends StatelessWidget {
       bottom: later.isEmpty
           ? null
           : _LaterSection(
-              state: state, later: later, now: now, onOpenTask: onOpenTask),
+              state: state,
+              later: later,
+              now: now,
+              onOpenTask: onOpenTask,
+            ),
     );
   }
 }

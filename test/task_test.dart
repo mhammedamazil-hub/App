@@ -74,8 +74,11 @@ void main() {
       final next = advanceDate(base, RepeatRule.daily, after: base);
       expect(next, DateTime(2026, 8, 17, 9));
       // jumps far enough to be after `after`
-      final far = advanceDate(base, RepeatRule.daily,
-          after: DateTime(2026, 9, 1));
+      final far = advanceDate(
+        base,
+        RepeatRule.daily,
+        after: DateTime(2026, 9, 1),
+      );
       expect(far!.isAfter(DateTime(2026, 9, 1)), true);
     });
 
@@ -88,8 +91,10 @@ void main() {
 
     test('weekly', () {
       final base = DateTime(2026, 8, 16, 9);
-      expect(advanceDate(base, RepeatRule.weekly, after: base),
-          DateTime(2026, 8, 23, 9));
+      expect(
+        advanceDate(base, RepeatRule.weekly, after: base),
+        DateTime(2026, 8, 23, 9),
+      );
     });
 
     test('monthly clamps end-of-month', () {
@@ -105,8 +110,14 @@ void main() {
     });
 
     test('none returns null', () {
-      expect(advanceDate(DateTime(2026, 1, 1), RepeatRule.none,
-          after: DateTime(2026, 1, 1)), null);
+      expect(
+        advanceDate(
+          DateTime(2026, 1, 1),
+          RepeatRule.none,
+          after: DateTime(2026, 1, 1),
+        ),
+        null,
+      );
     });
   });
 
@@ -156,8 +167,10 @@ void main() {
       );
       expect(task.doneSubtasks, 1);
       expect(task.subtaskProgress, closeTo(1 / 3, 0.001));
-      expect(Task(id: 'b', title: 'y', createdAt: DateTime.now())
-          .subtaskProgress, 0);
+      expect(
+        Task(id: 'b', title: 'y', createdAt: DateTime.now()).subtaskProgress,
+        0,
+      );
     });
   });
 }

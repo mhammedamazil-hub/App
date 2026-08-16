@@ -52,13 +52,16 @@ class TaskListView extends StatelessWidget {
       void flush() {
         if (bucket.isEmpty) return;
         final day = currentDay!;
-        final title = dateTitle?.call(day, bucket.length) ?? smartDate(day, now);
-        rows.add(_SectionHeader(
-          title: title,
-          color: isSameDay(day, now)
-              ? Theme.of(context).colorScheme.primary
-              : null,
-        ));
+        final title =
+            dateTitle?.call(day, bucket.length) ?? smartDate(day, now);
+        rows.add(
+          _SectionHeader(
+            title: title,
+            color: isSameDay(day, now)
+                ? Theme.of(context).colorScheme.primary
+                : null,
+          ),
+        );
         rows.addAll(bucket.map((t) => _tile(context, t)));
         bucket = [];
       }
@@ -88,8 +91,7 @@ class TaskListView extends StatelessWidget {
   }
 
   Widget _tile(BuildContext context, Task t) {
-    final project =
-        t.projectId.isEmpty ? null : state.projectById(t.projectId);
+    final project = t.projectId.isEmpty ? null : state.projectById(t.projectId);
     return Dismissible(
       key: ValueKey('task-${t.id}'),
       direction: DismissDirection.horizontal,
@@ -120,8 +122,10 @@ class TaskListView extends StatelessWidget {
           final result = state.completeTask(t.id);
           if (result != null) {
             if (result.next != null) {
-              _snack(context,
-                  'Completed — next occurrence scheduled for ${dueLabel(result.next!.dueAt!, now)}');
+              _snack(
+                context,
+                'Completed — next occurrence scheduled for ${dueLabel(result.next!.dueAt!, now)}',
+              );
             } else {
               _snack(context, 'Completed “${t.title}”', undoable: false);
             }
@@ -140,8 +144,10 @@ class TaskListView extends StatelessWidget {
           } else {
             final result = state.completeTask(t.id);
             if (result != null && result.next != null) {
-              _snack(context,
-                  'Completed — next occurrence scheduled for ${dueLabel(result.next!.dueAt!, now)}');
+              _snack(
+                context,
+                'Completed — next occurrence scheduled for ${dueLabel(result.next!.dueAt!, now)}',
+              );
             }
           }
         },
@@ -212,10 +218,7 @@ class TaskListView extends StatelessWidget {
         content: Text(message, maxLines: 2, overflow: TextOverflow.ellipsis),
         duration: Duration(seconds: undoable ? 6 : 3),
         action: undoable && state.canUndo
-            ? SnackBarAction(
-                label: 'Undo',
-                onPressed: () => state.undo(),
-              )
+            ? SnackBarAction(label: 'Undo', onPressed: () => state.undo())
             : null,
       ),
     );
@@ -249,10 +252,7 @@ class _SectionHeader extends StatelessWidget {
           if (trailing != null)
             Text(
               trailing!,
-              style: TextStyle(
-                fontSize: 12,
-                color: scheme.onSurfaceVariant,
-              ),
+              style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
             ),
         ],
       ),
@@ -287,8 +287,7 @@ Future<void> showMoveToProjectDialog(
             onPressed: () => Navigator.of(context).pop(p.id),
             child: Row(
               children: [
-                Icon(Icons.circle,
-                    size: 12, color: projectColor(p.colorIndex)),
+                Icon(Icons.circle, size: 12, color: projectColor(p.colorIndex)),
                 const SizedBox(width: 12),
                 Text(p.name),
               ],
@@ -299,10 +298,13 @@ Future<void> showMoveToProjectDialog(
   );
   if (target == null || target == task.projectId) return;
   state.moveTask(task.id, target);
-  final name =
-      target.isEmpty ? 'Inbox' : (state.projectById(target)?.name ?? 'project');
-  messenger.showSnackBar(SnackBar(
-    content: Text('Moved “${task.title}” to $name'),
-    duration: const Duration(seconds: 3),
-  ));
+  final name = target.isEmpty
+      ? 'Inbox'
+      : (state.projectById(target)?.name ?? 'project');
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text('Moved “${task.title}” to $name'),
+      duration: const Duration(seconds: 3),
+    ),
+  );
 }

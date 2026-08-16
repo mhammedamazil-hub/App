@@ -30,7 +30,8 @@ class ProjectsPage extends StatelessWidget {
       return EmptyState(
         icon: Icons.folder_open_outlined,
         title: 'No projects yet',
-        message: 'Projects keep related tasks together — Work, Personal, '
+        message:
+            'Projects keep related tasks together — Work, Personal, '
             'Health, or anything else.',
         actionLabel: 'Create project',
         onAction: onAddProject,
@@ -99,22 +100,24 @@ class _ProjectCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 15.5, fontWeight: FontWeight.w800),
+                        fontSize: 15.5,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                   PopupMenuButton<String>(
-                    icon: Icon(Icons.more_vert,
-                        size: 18, color: scheme.onSurfaceVariant),
+                    icon: Icon(
+                      Icons.more_vert,
+                      size: 18,
+                      color: scheme.onSurfaceVariant,
+                    ),
                     tooltip: 'Project options',
                     onSelected: (value) {
                       if (value == 'edit') onEdit();
                       if (value == 'delete') onDelete();
                     },
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'edit',
-                        child: Text('Edit'),
-                      ),
+                      const PopupMenuItem(value: 'edit', child: Text('Edit')),
                       PopupMenuItem(
                         value: 'delete',
                         child: Text(

@@ -35,11 +35,8 @@ class TodayView extends StatelessWidget {
             ? 'Enjoy the calm — or plan ahead with a new task.'
             : 'All caught up!',
         actionLabel: 'Add a task',
-        onAction: () => onOpenTask(Task(
-          id: '',
-          title: '',
-          createdAt: DateTime.now(),
-        )),
+        onAction: () =>
+            onOpenTask(Task(id: '', title: '', createdAt: DateTime.now())),
       );
     }
 
@@ -48,8 +45,7 @@ class TodayView extends StatelessWidget {
       children: [
         if (reminders.isNotEmpty) ...[
           const _Header('Reminders', icon: Icons.alarm),
-          for (final t in reminders.take(3))
-            _tile(context, t, highlight: true),
+          for (final t in reminders.take(3)) _tile(context, t, highlight: true),
         ],
         if (overdue.isNotEmpty) ...[
           const _Header('Overdue', icon: Icons.error_outline),
@@ -66,11 +62,8 @@ class TodayView extends StatelessWidget {
             title: 'All done for today',
             message: 'Your overdue list is clear and nothing is due today.',
             actionLabel: 'Add a task',
-            onAction: () => onOpenTask(Task(
-              id: '',
-              title: '',
-              createdAt: DateTime.now(),
-            )),
+            onAction: () =>
+                onOpenTask(Task(id: '', title: '', createdAt: DateTime.now())),
           ),
         ],
         if (completed.isNotEmpty) ...[
@@ -97,26 +90,38 @@ class TodayView extends StatelessWidget {
       child: Dismissible(
         key: ValueKey('today-${t.id}'),
         direction: DismissDirection.horizontal,
-        background: _bg(context, Alignment.centerLeft,
-            Icons.check, 'Complete', scheme.primary),
-        secondaryBackground: _bg(context, Alignment.centerRight,
-            Icons.delete_outline, 'Delete', scheme.error),
+        background: _bg(
+          context,
+          Alignment.centerLeft,
+          Icons.check,
+          'Complete',
+          scheme.primary,
+        ),
+        secondaryBackground: _bg(
+          context,
+          Alignment.centerRight,
+          Icons.delete_outline,
+          'Delete',
+          scheme.error,
+        ),
         onDismissed: (direction) {
           if (direction == DismissDirection.endToStart) {
             final title = state.deleteTask(t.id);
             if (title != null) {
               final messenger = ScaffoldMessenger.of(context);
               messenger.hideCurrentSnackBar();
-              messenger.showSnackBar(SnackBar(
-                content: Text('Deleted “$title”'),
-                duration: const Duration(seconds: 6),
-                action: state.canUndo
-                    ? SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () => state.undo(),
-                      )
-                    : null,
-              ));
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text('Deleted “$title”'),
+                  duration: const Duration(seconds: 6),
+                  action: state.canUndo
+                      ? SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () => state.undo(),
+                        )
+                      : null,
+                ),
+              );
             }
           } else if (t.isDone) {
             state.reopenTask(t.id);
@@ -124,11 +129,14 @@ class TodayView extends StatelessWidget {
             final result = state.completeTask(t.id);
             if (result != null && result.next != null) {
               final messenger = ScaffoldMessenger.of(context);
-              messenger.showSnackBar(SnackBar(
-                content: Text(
-                    'Completed — next: ${dueLabel(result.next!.dueAt!, now)}'),
-                duration: const Duration(seconds: 3),
-              ));
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Completed — next: ${dueLabel(result.next!.dueAt!, now)}',
+                  ),
+                  duration: const Duration(seconds: 3),
+                ),
+              );
             }
           }
         },
@@ -155,8 +163,13 @@ class TodayView extends StatelessWidget {
     );
   }
 
-  Widget _bg(BuildContext context, Alignment alignment, IconData icon,
-      String label, Color color) {
+  Widget _bg(
+    BuildContext context,
+    Alignment alignment,
+    IconData icon,
+    String label,
+    Color color,
+  ) {
     return Container(
       alignment: alignment,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),

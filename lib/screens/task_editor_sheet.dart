@@ -96,8 +96,7 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
         child: Center(
@@ -108,10 +107,9 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
               children: [
                 Text(
                   _isEditing ? 'Edit task' : 'New task',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w800),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 14),
                 TextField(
@@ -121,7 +119,9 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                   maxLines: 2,
                   minLines: 1,
                   style: const TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.w600),
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                  ),
                   decoration: const InputDecoration(
                     hintText: 'What needs to be done?',
                   ),
@@ -145,16 +145,15 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                 const SizedBox(height: 8),
                 SegmentedButton<TaskStatus>(
                   segments: const [
+                    ButtonSegment(value: TaskStatus.todo, label: Text('To Do')),
                     ButtonSegment(
-                        value: TaskStatus.todo, label: Text('To Do')),
-                    ButtonSegment(
-                        value: TaskStatus.doing, label: Text('Doing')),
-                    ButtonSegment(
-                        value: TaskStatus.done, label: Text('Done')),
+                      value: TaskStatus.doing,
+                      label: Text('Doing'),
+                    ),
+                    ButtonSegment(value: TaskStatus.done, label: Text('Done')),
                   ],
                   selected: {_status},
-                  onSelectionChanged: (s) =>
-                      setState(() => _status = s.first),
+                  onSelectionChanged: (s) => setState(() => _status = s.first),
                   showSelectedIcon: false,
                 ),
                 const SizedBox(height: 16),
@@ -191,8 +190,8 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                         text: _dueAt == null
                             ? 'Set date'
                             : (isAllDay(_dueAt!)
-                                ? fmtDate(_dueAt!)
-                                : '${fmtDate(_dueAt!)} · ${fmtTime(_dueAt!)}'),
+                                  ? fmtDate(_dueAt!)
+                                  : '${fmtDate(_dueAt!)} · ${fmtTime(_dueAt!)}'),
                         onTap: _pickDueDate,
                       ),
                     ),
@@ -202,7 +201,9 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                         icon: Icons.schedule_outlined,
                         text: _dueAt == null
                             ? 'Set time'
-                            : (isAllDay(_dueAt!) ? 'All day' : fmtTime(_dueAt!)),
+                            : (isAllDay(_dueAt!)
+                                  ? 'All day'
+                                  : fmtTime(_dueAt!)),
                         onTap: _pickDueTime,
                       ),
                     ),
@@ -226,27 +227,41 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                       setState(() => _reminderAt = null);
                     }),
                     _reminderChip('+30 min', _isReminderOffset(30), () {
-                      setState(() => _reminderAt = _reminderBase()
-                          .add(const Duration(minutes: 30)));
+                      setState(
+                        () => _reminderAt = _reminderBase().add(
+                          const Duration(minutes: 30),
+                        ),
+                      );
                     }),
                     _reminderChip('+1 hour', _isReminderOffset(60), () {
-                      setState(() => _reminderAt = _reminderBase()
-                          .add(const Duration(hours: 1)));
+                      setState(
+                        () => _reminderAt = _reminderBase().add(
+                          const Duration(hours: 1),
+                        ),
+                      );
                     }),
                     _reminderChip('+3 hours', _isReminderOffset(180), () {
-                      setState(() => _reminderAt = _reminderBase()
-                          .add(const Duration(hours: 3)));
+                      setState(
+                        () => _reminderAt = _reminderBase().add(
+                          const Duration(hours: 3),
+                        ),
+                      );
                     }),
                     _reminderChip('Tomorrow 9 AM', _isTomorrowNine(), () {
-                      final base = startOfDay(DateTime.now())
-                          .add(const Duration(days: 1, hours: 9));
+                      final base = startOfDay(
+                        DateTime.now(),
+                      ).add(const Duration(days: 1, hours: 9));
                       setState(() => _reminderAt = base);
                     }),
-                    _reminderChip('Custom…', _reminderAt != null &&
-                        !_isReminderOffset(30) &&
-                        !_isReminderOffset(60) &&
-                        !_isReminderOffset(180) &&
-                        !_isTomorrowNine(), _pickCustomReminder),
+                    _reminderChip(
+                      'Custom…',
+                      _reminderAt != null &&
+                          !_isReminderOffset(30) &&
+                          !_isReminderOffset(60) &&
+                          !_isReminderOffset(180) &&
+                          !_isTomorrowNine(),
+                      _pickCustomReminder,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -256,16 +271,14 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                   value: _repeat,
                   items: RepeatRule.values,
                   labelOf: repeatLabel,
-                  onChanged: (v) => setState(() => _repeat = v ?? RepeatRule.none),
+                  onChanged: (v) =>
+                      setState(() => _repeat = v ?? RepeatRule.none),
                 ),
                 if (_repeat != RepeatRule.none && _dueAt == null) ...[
                   const SizedBox(height: 8),
                   Text(
                     'Set a due date above so the next occurrence can be scheduled.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: scheme.error,
-                    ),
+                    style: TextStyle(fontSize: 12, color: scheme.error),
                   ),
                 ],
                 const SizedBox(height: 16),
@@ -280,7 +293,8 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                         TagChip(
                           text: tag,
                           onDeleted: () => setState(
-                              () => _tags.removeWhere((t) => t == tag)),
+                            () => _tags.removeWhere((t) => t == tag),
+                          ),
                         ),
                     ],
                   ),
@@ -289,9 +303,7 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                     Expanded(
                       child: TextField(
                         controller: _tagCtrl,
-                        decoration: const InputDecoration(
-                          hintText: 'Add tag…',
-                        ),
+                        decoration: const InputDecoration(hintText: 'Add tag…'),
                         onSubmitted: _addTag,
                       ),
                     ),
@@ -333,8 +345,9 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                           tooltip: 'Remove subtask',
                           icon: const Icon(Icons.close, size: 16),
                           visualDensity: VisualDensity.compact,
-                          onPressed: () => setState(() =>
-                              _subtasks.removeWhere((x) => x.id == s.id)),
+                          onPressed: () => setState(
+                            () => _subtasks.removeWhere((x) => x.id == s.id),
+                          ),
                         ),
                       ],
                     ),
@@ -361,11 +374,12 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                   contentPadding: EdgeInsets.zero,
                   title: const Text(
                     'Pinned',
-                    style:
-                        TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
-                  subtitle: const Text('Keep at the top of lists',
-                      style: TextStyle(fontSize: 12)),
+                  subtitle: const Text(
+                    'Keep at the top of lists',
+                    style: TextStyle(fontSize: 12),
+                  ),
                   value: _pinned,
                   onChanged: (v) => setState(() => _pinned = v),
                 ),
@@ -376,7 +390,8 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                       TextButton.icon(
                         onPressed: _delete,
                         style: TextButton.styleFrom(
-                            foregroundColor: scheme.error),
+                          foregroundColor: scheme.error,
+                        ),
                         icon: const Icon(Icons.delete_outline, size: 18),
                         label: const Text('Delete'),
                       ),
@@ -402,14 +417,14 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
   }
 
   Widget _label(String text) => Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.4,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      );
+    text,
+    style: TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w800,
+      letterSpacing: 0.4,
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    ),
+  );
 
   Widget _pickerButton({
     required IconData icon,
@@ -435,7 +450,9 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                      fontSize: 13, fontWeight: FontWeight.w600),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -481,7 +498,11 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
                 value: p.id,
                 child: Row(
                   children: [
-                    Icon(Icons.circle, size: 10, color: projectColor(p.colorIndex)),
+                    Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: projectColor(p.colorIndex),
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(p.name, overflow: TextOverflow.ellipsis),
@@ -531,8 +552,9 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
   bool _isTomorrowNine() {
     final r = _reminderAt;
     if (r == null) return false;
-    final target = startOfDay(DateTime.now())
-        .add(const Duration(days: 1, hours: 9));
+    final target = startOfDay(
+      DateTime.now(),
+    ).add(const Duration(days: 1, hours: 9));
     return r.isAtSameMomentAs(target);
   }
 
@@ -560,8 +582,13 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
       if (existing == null || isAllDay(existing)) {
         _dueAt = endOfDay(picked);
       } else {
-        _dueAt = DateTime(picked.year, picked.month, picked.day,
-            existing.hour, existing.minute);
+        _dueAt = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          existing.hour,
+          existing.minute,
+        );
       }
     });
   }
@@ -579,7 +606,13 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
     if (picked == null) return;
     setState(() {
       final day = base != null ? startOfDay(base) : startOfDay(now);
-      _dueAt = DateTime(day.year, day.month, day.day, picked.hour, picked.minute);
+      _dueAt = DateTime(
+        day.year,
+        day.month,
+        day.day,
+        picked.hour,
+        picked.minute,
+      );
     });
   }
 
@@ -600,8 +633,13 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
     );
     if (pickedTime == null) return;
     setState(() {
-      _reminderAt = DateTime(pickedDate.year, pickedDate.month, pickedDate.day,
-          pickedTime.hour, pickedTime.minute);
+      _reminderAt = DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
     });
   }
 
@@ -646,8 +684,9 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
       pinned: _pinned,
       reminderFired: existing?.reminderFired ?? false,
       createdAt: existing?.createdAt ?? now,
-      completedAt:
-          _status == TaskStatus.done ? (existing?.completedAt ?? now) : null,
+      completedAt: _status == TaskStatus.done
+          ? (existing?.completedAt ?? now)
+          : null,
       updatedAt: now,
     );
     if (existing == null) {
@@ -685,14 +724,18 @@ class _TaskEditorSheetState extends State<TaskEditorSheet> {
     final title = widget.state.deleteTask(widget.task!.id);
     navigator.pop();
     if (title != null) {
-      messenger.showSnackBar(SnackBar(
-        content: Text('Deleted “$title”'),
-        duration: const Duration(seconds: 6),
-        action: widget.state.canUndo
-            ? SnackBarAction(
-                label: 'Undo', onPressed: () => widget.state.undo())
-            : null,
-      ));
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('Deleted “$title”'),
+          duration: const Duration(seconds: 6),
+          action: widget.state.canUndo
+              ? SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () => widget.state.undo(),
+                )
+              : null,
+        ),
+      );
     }
   }
 

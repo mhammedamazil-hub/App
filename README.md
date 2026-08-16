@@ -60,15 +60,15 @@ Unit tests cover model serialization, repeat scheduling (including end-of-month
 and leap-day edge cases), overdue logic, queries, streaks, undo, import/export
 and persistence.
 
-## CI & web preview
+## Optional: build & publish a web preview
 
-`.github/workflows/build-web.yml` runs format, `flutter analyze`, `flutter test`
-and `flutter build web --release` on every push to the arena branch, then
-publishes the build (plus `analyze.log` / `test.log`) to the `gh-pages` branch.
-
-To host the app on GitHub Pages, enable Pages from the `gh-pages` branch in the
-repository settings (build with `flutter build web --base-href "/App/"` if your
-repo is served from a sub-path).
+`tool/github-pages-workflow.yml` is a ready-made GitHub Actions workflow that
+runs `flutter analyze`, `flutter test` and `flutter build web --release`, then
+publishes the build to the `gh-pages` branch. To enable it, copy the file to
+`.github/workflows/build-web.yml` in this repository (GitHub requires workflow
+files to be added by a human account). You can then host the app with GitHub
+Pages (build with `flutter build web --base-href "/App/"` if your repo is
+served from a sub-path).
 
 ## Project layout
 

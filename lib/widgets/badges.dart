@@ -112,9 +112,7 @@ class TagChip extends StatelessWidget {
             ? scheme.secondaryContainer
             : scheme.surfaceContainerHighest.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(999),
-        border: selected
-            ? Border.all(color: scheme.secondary, width: 1)
-            : null,
+        border: selected ? Border.all(color: scheme.secondary, width: 1) : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -123,7 +121,9 @@ class TagChip extends StatelessWidget {
             '#$text',
             style: TextStyle(
               fontSize: 11.5,
-              color: selected ? scheme.onSecondaryContainer : scheme.onSurfaceVariant,
+              color: selected
+                  ? scheme.onSecondaryContainer
+                  : scheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -132,7 +132,11 @@ class TagChip extends StatelessWidget {
             InkWell(
               onTap: onDeleted,
               borderRadius: BorderRadius.circular(999),
-              child: Icon(Icons.close, size: 12, color: scheme.onSurfaceVariant),
+              child: Icon(
+                Icons.close,
+                size: 12,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
           ],
         ],
@@ -174,7 +178,9 @@ class SubtaskChip extends StatelessWidget {
           Icon(
             complete ? Icons.check_circle : Icons.checklist,
             size: 13,
-            color: complete ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+            color: complete
+                ? scheme.onPrimaryContainer
+                : scheme.onSurfaceVariant,
           ),
           const SizedBox(width: 4),
           Text(
@@ -182,7 +188,9 @@ class SubtaskChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 11.5,
               fontWeight: FontWeight.w600,
-              color: complete ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+              color: complete
+                  ? scheme.onPrimaryContainer
+                  : scheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -284,11 +292,7 @@ class ProjectAvatar extends StatelessWidget {
         color: color.withValues(alpha: 0.15),
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        projectIcon(iconIndex),
-        size: size * 0.55,
-        color: color,
-      ),
+      child: Icon(projectIcon(iconIndex), size: size * 0.55, color: color),
     );
   }
 }

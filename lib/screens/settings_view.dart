@@ -16,10 +16,9 @@ class SettingsView extends StatelessWidget {
       children: [
         Text(
           'Settings',
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
-              ?.copyWith(fontWeight: FontWeight.w800),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 16),
         _Section(
@@ -39,17 +38,20 @@ class SettingsView extends StatelessWidget {
               SegmentedButton<int>(
                 segments: const [
                   ButtonSegment(
-                      value: 0,
-                      label: Text('System'),
-                      icon: Icon(Icons.brightness_auto_outlined, size: 16)),
+                    value: 0,
+                    label: Text('System'),
+                    icon: Icon(Icons.brightness_auto_outlined, size: 16),
+                  ),
                   ButtonSegment(
-                      value: 1,
-                      label: Text('Light'),
-                      icon: Icon(Icons.light_mode_outlined, size: 16)),
+                    value: 1,
+                    label: Text('Light'),
+                    icon: Icon(Icons.light_mode_outlined, size: 16),
+                  ),
                   ButtonSegment(
-                      value: 2,
-                      label: Text('Dark'),
-                      icon: Icon(Icons.dark_mode_outlined, size: 16)),
+                    value: 2,
+                    label: Text('Dark'),
+                    icon: Icon(Icons.dark_mode_outlined, size: 16),
+                  ),
                 ],
                 selected: {state.settings.themeMode.clamp(0, 2)},
                 onSelectionChanged: (selection) {
@@ -112,7 +114,9 @@ class SettingsView extends StatelessWidget {
                   child: Text(
                     state.loadError!,
                     style: TextStyle(
-                        fontSize: 12.5, color: scheme.onErrorContainer),
+                      fontSize: 12.5,
+                      color: scheme.onErrorContainer,
+                    ),
                   ),
                 ),
               ],
@@ -127,7 +131,9 @@ class SettingsView extends StatelessWidget {
                   child: Text(
                     state.saveError!,
                     style: TextStyle(
-                        fontSize: 12.5, color: scheme.onErrorContainer),
+                      fontSize: 12.5,
+                      color: scheme.onErrorContainer,
+                    ),
                   ),
                 ),
               ],
@@ -137,9 +143,12 @@ class SettingsView extends StatelessWidget {
                   final messenger = ScaffoldMessenger.of(context);
                   try {
                     final message = await state.exportBackupNow();
-                    messenger.showSnackBar(SnackBar(
+                    messenger.showSnackBar(
+                      SnackBar(
                         content: Text(message),
-                        duration: const Duration(seconds: 4)));
+                        duration: const Duration(seconds: 4),
+                      ),
+                    );
                   } catch (e) {
                     messenger.showSnackBar(SnackBar(content: Text('$e')));
                   }
@@ -162,9 +171,7 @@ class SettingsView extends StatelessWidget {
               const SizedBox(height: 10),
               OutlinedButton.icon(
                 onPressed: () => _clearAll(context),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: scheme.error,
-                ),
+                style: OutlinedButton.styleFrom(foregroundColor: scheme.error),
                 icon: const Icon(Icons.delete_forever_outlined),
                 label: const Text('Clear all data'),
               ),
@@ -184,14 +191,14 @@ class SettingsView extends StatelessWidget {
                     height: 40,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                          colors: [
-                            scheme.primary,
-                            scheme.primary.withValues(alpha: 0.65)
-                          ]),
+                        colors: [
+                          scheme.primary,
+                          scheme.primary.withValues(alpha: 0.65),
+                        ],
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child:
-                        Icon(Icons.check, color: scheme.onPrimary, size: 24),
+                    child: Icon(Icons.check, color: scheme.onPrimary, size: 24),
                   ),
                   const SizedBox(width: 12),
                   const Column(
@@ -200,7 +207,9 @@ class SettingsView extends StatelessWidget {
                       Text(
                         'TaskFlow',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w800),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                       Text(
                         'Version 1.0.0 — advanced to-do list',
@@ -225,10 +234,7 @@ class SettingsView extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 'Keyboard: Ctrl+N new task · Ctrl+K search · Esc clear search',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: scheme.onSurfaceVariant,
-                ),
+                style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
               ),
             ],
           ),
@@ -244,8 +250,9 @@ class SettingsView extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Import backup?'),
         content: const Text(
-            'This replaces all current tasks and projects with the backup. '
-            'You can undo afterwards.'),
+          'This replaces all current tasks and projects with the backup. '
+          'You can undo afterwards.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -262,16 +269,20 @@ class SettingsView extends StatelessWidget {
     try {
       final summary = await state.importBackupNow();
       if (summary == null) {
-        messenger.showSnackBar(const SnackBar(content: Text('Import cancelled.')));
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Import cancelled.')),
+        );
         return;
       }
-      messenger.showSnackBar(SnackBar(
-        content: Text(summary),
-        duration: const Duration(seconds: 6),
-        action: state.canUndo
-            ? SnackBarAction(label: 'Undo', onPressed: () => state.undo())
-            : null,
-      ));
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(summary),
+          duration: const Duration(seconds: 6),
+          action: state.canUndo
+              ? SnackBarAction(label: 'Undo', onPressed: () => state.undo())
+              : null,
+        ),
+      );
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('$e')));
     }
@@ -284,8 +295,9 @@ class SettingsView extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Load sample data?'),
         content: const Text(
-            'Adds example projects and tasks so you can explore the app. '
-            'Your current data stays untouched.'),
+          'Adds example projects and tasks so you can explore the app. '
+          'Your current data stays untouched.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -301,7 +313,8 @@ class SettingsView extends StatelessWidget {
     if (confirmed != true) return;
     state.loadSampleData();
     messenger.showSnackBar(
-        const SnackBar(content: Text('Sample data loaded. Enjoy exploring!')));
+      const SnackBar(content: Text('Sample data loaded. Enjoy exploring!')),
+    );
   }
 
   Future<void> _clearAll(BuildContext context) async {
@@ -311,8 +324,9 @@ class SettingsView extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Clear all data?'),
         content: const Text(
-            'Every task and project will be permanently removed from this '
-            'device. Consider exporting a backup first.'),
+          'Every task and project will be permanently removed from this '
+          'device. Consider exporting a backup first.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -331,11 +345,13 @@ class SettingsView extends StatelessWidget {
     );
     if (confirmed != true) return;
     state.clearAll();
-    messenger.showSnackBar(SnackBar(
-      content: const Text('All data cleared.'),
-      duration: const Duration(seconds: 6),
-      action: SnackBarAction(label: 'Undo', onPressed: () => state.undo()),
-    ));
+    messenger.showSnackBar(
+      SnackBar(
+        content: const Text('All data cleared.'),
+        duration: const Duration(seconds: 6),
+        action: SnackBarAction(label: 'Undo', onPressed: () => state.undo()),
+      ),
+    );
   }
 }
 
@@ -353,9 +369,7 @@ class _Section extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.4),
-        ),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -401,7 +415,9 @@ class _ColorDot extends StatelessWidget {
           shape: BoxShape.circle,
           border: selected
               ? Border.all(
-                  color: Theme.of(context).colorScheme.onSurface, width: 3)
+                  color: Theme.of(context).colorScheme.onSurface,
+                  width: 3,
+                )
               : null,
         ),
         child: selected
