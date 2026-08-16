@@ -1,7 +1,7 @@
 name: build-android-apk
 
-# Builds the TaskFlow Android app and publishes the APKs as a GitHub Release
-# (rolling tag `latest`), so anyone can download and install them from
+# Builds the TaskFlow Android APK and publishes it as a GitHub Release
+# (rolling tag `latest`) so anyone can download and install it:
 # https://github.com/mhammedamazil-hub/App/releases/latest
 #
 # Enable this workflow by copying this file to .github/workflows/ in the
@@ -34,12 +34,6 @@ jobs:
         with:
           ref: arena/01a008ff-app
 
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -47,67 +41,36 @@ jobs:
           flutter-version: "3.35.7"
           cache: true
 
-      - name: Repair Android scaffolding (idempotent)
+      - name: Prepare Android toolchain
         run: |
           flutter create . --platforms=android --project-name taskflow --org com.taskflow
+          yes | flutter doctor --android-licenses || true
 
-      - name: Accept Android SDK licenses
-        run: yes | flutter doctor --android-licenses || true
-
-      - name: Prepare, test and build
+      - name: Test and build APK
         run: |
-          set -o pipefail
           mkdir -p ci-logs
+          set -o pipefail
           flutter pub get 2>&1 | tee ci-logs/latest-build.log
           flutter test 2>&1 | tee -a ci-logs/latest-build.log
           flutter build apk --release 2>&1 | tee -a ci-logs/latest-build.log
-          flutter build apk --release --split-per-abi 2>&1 | tee -a ci-logs/latest-build.log
 
-      - name: Collect release assets
-        run: |
-          mkdir -p dist
-          cp build/app/outputs/flutter-apk/app-release.apk dist/taskflow-universal.apk
-          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk dist/taskflow-arm64-v8a.apk
-          cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk dist/taskflow-armeabi-v7a.apk
-          cp build/app/outputs/flutter-apk/app-x86_64-release.apk dist/taskflow-x86_64.apk
-          ls -lh dist
-
-      - name: Upload APKs as workflow artifacts (backup)
-        uses: actions/upload-artifact@v4
-        with:
-          name: taskflow-apks
-          path: dist/*.apk
-          if-no-files-found: error
-          retention-days: 14
-
-      - name: Publish GitHub release
+      - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          NOTES="TaskFlow v1.0.0 — Android build from commit ${{ github.sha }} (Flutter 3.35.7)."
-          NOTES+=$'\n'
-          NOTES+=$'\nInstall: open the APK on your Android phone and allow "install from unknown sources".'
-          NOTES+=$'\n'
-          NOTES+=$'\nPick your file:'
-          NOTES+=$'\n• taskflow-arm64-v8a.apk — most phones (2017+)'
-          NOTES+=$'\n• taskflow-armeabi-v7a.apk — older phones'
-          NOTES+=$'\n• taskflow-x86_64.apk — Android emulators'
-          NOTES+=$'\n• taskflow-universal.apk — works on any device (largest)'
-          NOTES+=$'\n'
-          NOTES+=$'\nNote: signed with the Flutter debug key — fine for sideloading, not for the Play Store.'
+          cp build/app/outputs/flutter-apk/app-release.apk taskflow.apk
           gh release delete latest --yes --cleanup-tag || true
-          sleep 2
-          gh release create latest dist/*.apk \
-            --title "TaskFlow v1.0.0 — Android APK" \
-            --notes "$NOTES"
+          gh release create latest taskflow.apk \
+            --title "TaskFlow — Android APK" \
+            --notes "Install: download taskflow.apk, open it on your Android phone and allow installs from unknown sources. Built from commit ${{ github.sha }}."
           echo "Download page: https://github.com/${{ github.repository }}/releases/latest"
-          echo "Direct link:   https://github.com/${{ github.repository }}/releases/latest/download/taskflow-universal.apk"
+          echo "Direct APK:    https://github.com/${{ github.repository }}/releases/latest/download/taskflow.apk"
 
-      - name: Attach build log to repo on failure
+      - name: Attach build log on failure
         if: failure()
         run: |
           git config user.name "taskflow-ci"
           git config user.email "ci@taskflow.local"
           git add ci-logs/latest-build.log
-          git commit -m "ci: attach failing build log" || true
+          git commit -m "ci: build log" || true
           git push origin HEAD:arena/01a008ff-app
