@@ -1,12 +1,5 @@
 name: build-android-apk
 
-# Builds the TaskFlow Android APK and publishes it as a GitHub Release
-# (rolling tag `latest`) so anyone can download and install it:
-# https://github.com/mhammedamazil-hub/App/releases/latest
-#
-# Tests never block the release; all logs (test + build) are force-committed
-# to ci-logs/ so failures can be diagnosed straight from the repo.
-
 on:
   push:
     branches: ["main", "arena/01a008ff-app"]
@@ -49,19 +42,25 @@ jobs:
       - name: Repair Android scaffolding (idempotent)
         run: flutter create . --platforms=android --project-name taskflow --org com.taskflow
 
-      - name: Accept Android SDK licenses
-        run: yes | flutter doctor --android-licenses || true
+      - name: Android SDK components and licenses
+        run: |
+          SDK="$ANDROID_SDK_ROOT"
+          echo "SDK at: $SDK"
+          ls "$SDK/cmdline-tools" 2>/dev/null || true
+          yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;35.0.0" "platform-tools" || true
+          flutter doctor -v
 
       - name: Resolve dependencies
         run: flutter pub get
 
-      - name: Run tests (log saved to repo; never blocks the release)
+      - name: Run tests (never blocks the release)
         continue-on-error: true
         run: |
           mkdir -p ci-logs
           flutter test --reporter expanded 2>&1 | tee ci-logs/test.log || true
 
-      - name: Build release APK (output captured to ci-logs/build.log)
+      - name: Build release APK
         run: |
           mkdir -p ci-logs
           set -o pipefail
