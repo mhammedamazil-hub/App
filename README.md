@@ -89,3 +89,22 @@ lib/
   screens/                      shell, views, editor, kanban, settings, stats
 test/                           unit tests
 ```
+
+## 📱 Download the Android app (APK)
+
+Every push to this repository automatically builds the Android app and
+publishes the APKs as a GitHub Release:
+
+- **Release page:** https://github.com/mhammedamazil-hub/App/releases/latest
+- **Universal APK (works on any phone):**
+  https://github.com/mhammedamazil-hub/App/releases/latest/download/taskflow-universal.apk
+- **Modern phones (arm64):**
+  https://github.com/mhammedamazil-hub/App/releases/latest/download/taskflow-arm64-v8a.apk
+
+To install: open the downloaded APK on your Android phone and allow
+"install from unknown sources" when prompted.
+
+The build pipeline (`tool/build-apk-workflow.yml`) runs the unit tests, then
+builds universal + per-ABI release APKs and attaches them to a rolling
+`latest` release. The APK is signed with the Flutter debug key — perfect for
+sideloading; for the Play Store you would add your own signing keystore.
