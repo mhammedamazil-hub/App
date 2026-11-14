@@ -1,0 +1,44 @@
+name: Deploy DeckCraft to GitHub Pages
+
+on:
+  push:
+    branches: [main, arena/46ce9cb0-app]
+    paths:
+      - '.github/workflows/pages.yml'
+      - 'scripts/prepare-site.sh'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'DeckCraft release version (without v)'
+        required: false
+        default: '0.18.1'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify DeckCraft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DECKCRAFT_VERSION: ${{ inputs.version || '0.18.1' }}
+        run: scripts/prepare-site.sh
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
