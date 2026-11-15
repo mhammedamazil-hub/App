@@ -28,6 +28,21 @@ while read -r repo prefix version extra; do
   mkdir -p "$tmp/site/$repo"
   cp -a "$source_dir/." "$tmp/site/$repo/"
 done < scripts/releases.tsv
+# Enumerate each app's static files for optional, complete offline downloads.
+python3 - "$tmp/site" scripts/releases.tsv <<'PYTHON'
+import json, sys
+from pathlib import Path
+from urllib.parse import quote
+root = Path(sys.argv[1])
+manifest = {}
+for line in Path(sys.argv[2]).read_text().splitlines():
+    if not line.strip() or line.lstrip().startswith('#'):
+        continue
+    repo, _, version = line.split()
+    files = sorted(p for p in (root / repo).rglob('*') if p.is_file() and not any(part.startswith('.') for part in p.relative_to(root).parts))
+    manifest[repo] = {'version': version, 'files': ['/'.join(quote(part, safe='') for part in p.relative_to(root).parts) for p in files]}
+(root / 'offline-apps.json').write_text(json.dumps(manifest, separators=(',', ':')))
+PYTHON
 # Only replace the prior output after every app has been verified and assembled.
 rm -rf _site
 mv "$tmp/site" _site

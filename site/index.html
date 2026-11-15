@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#131826">
   <title>Craft apps</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <script defer src="db.js"></script>
+  <script defer src="app.js"></script>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; background: #101522; color: #f1f4fb; font: 16px/1.5 system-ui, sans-serif; }
@@ -18,6 +22,22 @@
     .name { font-size: 1.15rem; font-weight: 700; }
     .description { margin: 5px 0 16px; color: #aebbd0; font-size: .9rem; }
     .open { margin-top: auto; color: #b9c2ff; font-size: .85rem; font-weight: 700; }
+    .app-item { display: flex; flex-direction: column; gap: 8px; }
+    .app-item .card { flex: 1; }
+    button, input[type=file] { font: inherit; }
+    button { background: #283653; border: 1px solid #536587; border-radius: 8px; color: #f1f4fb; padding: 9px 12px; cursor: pointer; }
+    button:hover, button:focus-visible { border-color: #b9c2ff; }
+    button:disabled { opacity: .55; cursor: wait; }
+    .offline-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .offline-controls button { font-size: .8rem; flex: 1; }
+    .badge { color: #aebbd0; font-size: .8rem; }
+    section { margin-top: 44px; }
+    .panel { padding: 20px; border: 1px solid #313d55; background: #1a2232; border-radius: 16px; }
+    #status { color: #cbd4eb; min-height: 1.5em; }
+    #files { list-style: none; padding: 0; }
+    #files li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #313d55; overflow-wrap: anywhere; }
+    #files li span { flex: 1; min-width: 140px; }
+    .muted { color: #bbc4d6; }
     footer { margin-top: 36px; color: #aebbd0; font-size: .9rem; }
     footer a { color: #c3cbff; }
   </style>
@@ -26,6 +46,12 @@
   <div class="eyebrow">Creative tools · in your browser</div>
   <h1>Craft apps</h1>
   <p class="intro">Choose an app to get started. These browser editions are published by Storytold and run on your device. The first load can take a while.</p>
+  <section class="panel" aria-labelledby="offline-title">
+    <h2 id="offline-title">Use offline</h2>
+    <p class="muted">Install this page using your browser’s “Add to Home Screen” or “Install app” menu. While online, choose “Save offline” below for each app you want. Downloads can be large and need free device storage.</p>
+    <button id="install" hidden>Install Craft apps</button>
+    <p id="status" role="status" aria-live="polite">Setting up offline support…</p>
+  </section>
   <div class="grid">
     <a class="card" href="photocraft/"><span class="name">PhotoCraft</span><span class="description">Photo editing</span><span class="open">Open app →</span></a>
     <a class="card" href="lightcraft/"><span class="name">LightCraft</span><span class="description">Non-destructive photo editing</span><span class="open">Open app →</span></a>
@@ -44,5 +70,12 @@
     <a class="card" href="materialcraft/"><span class="name">MaterialCraft</span><span class="description">Node-based material design</span><span class="open">Open app →</span></a>
     <a class="card" href="craft-launcher/"><span class="name">ArtCraft Launcher</span><span class="description">The upstream app launcher</span><span class="open">Open app →</span></a>
   </div>
+  <section class="panel" aria-labelledby="vault-title">
+    <h2 id="vault-title">Local file vault</h2>
+    <p class="muted">Keep copies in this browser’s IndexedDB. To store a document, export or download it from an app first, then add it here. This is not automatic app saving or cloud backup; clearing browser data can erase these copies. Download backups regularly.</p>
+    <label for="file-input">Add files to this device:</label> <input id="file-input" type="file" multiple>
+    <p id="vault-status" role="status" aria-live="polite"></p>
+    <ul id="files"></ul>
+  </section>
   <footer>Browser support and touch controls vary by app. The upstream projects are maintained by <a href="https://github.com/storytold">Storytold</a>.</footer>
 </main></body></html>

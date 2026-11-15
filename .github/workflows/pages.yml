@@ -7,6 +7,7 @@ on:
       - '.github/workflows/pages.yml'
       - 'scripts/**'
       - 'site/**'
+      - 'tests/**'
   workflow_dispatch:
 
 permissions:
@@ -26,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Test offline worker
+        run: node tests/sw.test.cjs
       - name: Download and verify Craft web releases
         env:
           GH_TOKEN: ${{ github.token }}
