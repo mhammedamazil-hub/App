@@ -1,13 +1,14 @@
-# DeckCraft on GitHub Pages
+# Craft apps on GitHub Pages
 
-This repository publishes the prebuilt [DeckCraft](https://github.com/storytold/deckcraft) web app. The workflow downloads the official release with GitHub CLI, verifies its SHA-256 checksum, and deploys the static files to GitHub Pages; the WebAssembly binary is not committed here.
+This repository hosts the official prebuilt browser releases of the [Storytold Craft apps](https://github.com/storytold) on a shared launcher page at <https://mhammedamazil-hub.github.io/App/>. Open it on a modern desktop, tablet, or phone browser. App downloads can be large; browser, GPU, and touch support differ by app and device.
 
-The intended URL is <https://mhammedamazil-hub.github.io/App/> once Pages is enabled and the deployment succeeds. Open it in a modern mobile, tablet, or desktop browser. DeckCraft uses WebGPU when available and falls back to WebGL2; browser/device support and the upstream app's touch layout may vary.
+The launcher includes 15 creative apps and ArtCraft Launcher. AniCraft and ArtCraft itself do not currently have a published web release asset and are not included. The list reflects releases available when this repository was updated, not automatic discovery of future apps.
 
-## Setup and updates
+## Deployment and updates
 
-1. In repository **Settings → Pages**, set **Build and deployment → Source** to **GitHub Actions**.
-2. Push the workflow to `main` or run **Deploy DeckCraft to GitHub Pages** from the Actions tab after the workflow exists on the default branch. The initial working branch can also trigger a deployment on push.
-3. The workflow defaults to DeckCraft `0.18.1`. To deploy another release, run it manually with a version such as `0.18.1` (without the `v`), or update the default version in both the workflow and `scripts/prepare-site.sh`. Manual runs do not change that default.
+- Set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**. Merging changes to `site/`, `scripts/`, or the workflow into `main` starts a deployment. You can also run **Deploy Craft apps to GitHub Pages** manually from Actions.
+- `scripts/releases.tsv` pins each app's repository, archive prefix and version. To update an app, change its version to an existing release containing the corresponding web ZIP and `SHA256SUMS.txt`, then deploy again. Add newly published apps to this list and link them from `site/index.html`.
+- The workflow uses GitHub CLI to download each archive and checksum file, verifies each archive's SHA-256 against the upstream checksum, then deploys all sites together. An unavailable release or failed checksum stops the deployment so a partial site is not published. The WebAssembly files are not committed to this repository. Checksums detect corruption but are not independent signature verification.
+- Each app is under its own path, for example `/App/deckcraft/`. The previous DeckCraft root URL now opens the launcher instead.
 
-Check the Actions run for deployment errors. GitHub Pages must be available for the repository, and the `github-pages` environment must allow the deploying branch. Files are from the upstream project and subject to its licenses; see the documentation included in the deployed release.
+Check Actions for deployment errors. Pages must be available for the repository and the `github-pages` environment must allow `main`. Apps and included documentation are provided by their upstream projects under their respective licenses.

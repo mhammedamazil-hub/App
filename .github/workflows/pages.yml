@@ -1,17 +1,13 @@
-name: Deploy DeckCraft to GitHub Pages
+name: Deploy Craft apps to GitHub Pages
 
 on:
   push:
-    branches: [main, arena/46ce9cb0-app]
+    branches: [main]
     paths:
       - '.github/workflows/pages.yml'
-      - 'scripts/prepare-site.sh'
+      - 'scripts/**'
+      - 'site/**'
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'DeckCraft release version (without v)'
-        required: false
-        default: '0.18.1'
 
 permissions:
   contents: read
@@ -30,10 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Download and verify DeckCraft
+      - name: Download and verify Craft web releases
         env:
           GH_TOKEN: ${{ github.token }}
-          DECKCRAFT_VERSION: ${{ inputs.version || '0.18.1' }}
         run: scripts/prepare-site.sh
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
